@@ -125,11 +125,11 @@ public class Database {
         }
     }
 
-    public boolean deleteCoords(CoordsObj coords) {
+    public boolean deleteCoords(UUID uuid, String name) {
         try {
             PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE uuid = ? AND name = ?;");
-            statement.setString(1, coords.uuid.toString());
-            statement.setString(2, coords.name);
+            statement.setString(1, uuid.toString());
+            statement.setString(2, name);
 
             int deleted = statement.executeUpdate();
 
