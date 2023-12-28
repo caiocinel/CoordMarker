@@ -43,7 +43,7 @@ public class CoordsClear extends CustomSubcommand {
             return true;
         }
         else {
-            plugin.getDatabase().clearPrivateCoordinates(player.getUniqueId());
+            plugin.getDatabase().clearCoords(player.getUniqueId());
             sender.sendMessage(ColorFormat.colorize("&aAll your saved coordinates have been cleared."));
             return true;
         }
