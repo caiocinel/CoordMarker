@@ -7,6 +7,7 @@ import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.CustomCommand;
 import me.okay.coordsaver.CustomSubcommand;
 
+
 public class Coords extends CustomCommand {
     public Coords(CoordSaver plugin) {
         super(plugin, "coords");
@@ -15,6 +16,7 @@ public class Coords extends CustomCommand {
         addSubcommand(new CoordsList(plugin));
         addSubcommand(new CoordsClear(plugin));
         addSubcommand(new CoordsRemove(plugin));
+        addSubcommand(new CoordsCreate(plugin));
     }
 
     @Override

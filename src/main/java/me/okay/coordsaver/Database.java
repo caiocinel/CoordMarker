@@ -1,5 +1,7 @@
 package me.okay.coordsaver;
 
+import me.okay.coordsaver.objects.CoordsObj;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -51,6 +53,19 @@ public class Database {
                 );        
             """).execute();
 
+            conn.prepareStatement("""
+               CREATE TABLE IF NOT EXISTS "Coords" (
+                    "name" TEXT NOT NULL,
+                    "uuid" TEXT NOT NULL,
+                    "x" INTEGER NOT NULL,
+                    "y" INTEGER NOT NULL,
+                    "z" INTEGER NOT NULL,
+                    "global" INTEGER NOT NULL,
+                    "world" TEXT NOT NULL,
+                    PRIMARY KEY("uuid", "name")
+                );
+            """).execute();
+
         } catch (SQLException e) {
             logger.severe(e.getMessage());
         }
@@ -91,6 +106,88 @@ public class Database {
         catch (SQLException e) {
             logger.severe(e.getMessage());
         }
+    }
+
+    public void saveCoords(CoordsObj coords) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("INSERT OR REPLACE INTO Coords VALUES (?, ?, ?, ?, ?, ?, ?);");
+            statement.setString(1, coords.name);
+            statement.setString(2, coords.uuid.toString());
+            statement.setInt(3, coords.x);
+            statement.setInt(4, coords.y);
+            statement.setInt(5, coords.z);
+            statement.setInt(6, coords.global);
+            statement.setString(7, coords.world);
+            statement.execute();
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+    }
+
+    public boolean deleteCoords(CoordsObj coords) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE uuid = ? AND name = ?;");
+            statement.setString(1, coords.uuid.toString());
+            statement.setString(2, coords.name);
+
+            int deleted = statement.executeUpdate();
+
+            return deleted != 0;
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public void clearCoords(UUID uuid) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE uuid = ?;");
+            statement.setString(1, uuid.toString());
+            statement.execute();
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+    }
+
+    public int getCoordsCount(UUID uuid) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("SELECT COUNT(*) FROM Coords WHERE uuid = ?;");
+            statement.setString(1, uuid.toString());
+            ResultSet result = statement.executeQuery();
+
+            if (result.next()) {
+                return result.getInt(1);
+            }
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+        return -1;
+    }
+
+    public List<CoordsObj> getCoordsList(UUID uuid, int page) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("SELECT * FROM Coords WHERE uuid = ? ORDER BY name LIMIT ?, ?;");
+            statement.setString(1, uuid.toString());
+            statement.setInt(2, (page - 1) * CoordSaver.COORDS_PER_PAGE);
+            statement.setInt(3, CoordSaver.COORDS_PER_PAGE);
+            ResultSet result = statement.executeQuery();
+
+            List<CoordsObj> coordinates = new ArrayList<>();
+            while (result.next()) {
+                coordinates.add(new CoordsObj(result.getString("name"), uuid, result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world")));
+            }
+
+            return coordinates;
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+        return null;
     }
 
     public boolean deletePrivateCoordinates(UUID uuid, String name) {

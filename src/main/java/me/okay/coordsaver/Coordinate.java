@@ -9,6 +9,8 @@ public class Coordinate {
     private final int z;
     private final String world;
 
+
+
     public Coordinate(String name, int x, int y, int z, String world) {
         this.name = name;
         this.x = x;

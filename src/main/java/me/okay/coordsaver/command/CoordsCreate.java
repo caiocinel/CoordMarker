@@ -1,27 +1,27 @@
 package me.okay.coordsaver.command;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.okay.coordsaver.CoordSaver;
+import me.okay.coordsaver.CustomSubcommand;
+import me.okay.coordsaver.objects.CoordsObj;
+import me.okay.coordsaver.utils.ColorFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.CustomSubcommand;
-import me.okay.coordsaver.utils.ColorFormat;
+import java.util.ArrayList;
+import java.util.List;
 
-public class GlobalCoordsSet extends CustomSubcommand {
+public class CoordsCreate extends CustomSubcommand {
     private final CoordSaver plugin;
 
-    public GlobalCoordsSet(CoordSaver plugin) {
+    public CoordsCreate(CoordSaver plugin) {
         super(
-            "set",
-            "Set a global coordinate",
-            "coordsaver.globalcoords.set",
-            "set <name> [<x> <y> <z>] [<world>]"
+            "create",
+            "Create a Marker",
+            "coordsaver.coords.create",
+            "create <name> [<x> <y> <z>] [private = true] [<world>]"
         );
 
         this.plugin = plugin;
@@ -31,27 +31,31 @@ public class GlobalCoordsSet extends CustomSubcommand {
     public boolean onRun(CommandSender sender, CustomSubcommand command, String label, String[] args) {
         int x, y, z;
         String world;
+        boolean global;
 
-        if (!(sender instanceof Player) && args.length < 5) {
-            sender.sendMessage(ColorFormat.colorize("&cx, y, z and world are required arguments if run from console."));
-            return false;
-        }
-
-        if (args.length < 1) {
-            return false;
-        }
-
-        String name = args[0];
-        if (name.strip().isEmpty()) {
-            sender.sendMessage(ColorFormat.colorize("&cName cannot be empty."));
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ColorFormat.colorize("&cThis command can only be run by a player."));
             return true;
         }
 
-        if (args.length > 1) {
-            if (args.length < 4) {
-                return false;
-            }
-            
+        Player player = (Player) sender;
+
+        if (args.length < 1)
+            return false;
+
+        String name = args[0];
+        if (name.isBlank()) {
+            player.sendMessage(ColorFormat.colorize("&cName cannot be empty."));
+            return true;
+        }
+
+        if(args.length == 1)
+        {
+            Location playerLocation = player.getLocation();
+            x = playerLocation.getBlockX();
+            y = playerLocation.getBlockY();
+            z = playerLocation.getBlockZ();
+        }else{
             try {
                 x = Integer.parseInt(args[1]);
                 y = Integer.parseInt(args[2]);
@@ -61,24 +65,22 @@ public class GlobalCoordsSet extends CustomSubcommand {
                 sender.sendMessage(ColorFormat.colorize("&cx, y, and z must be integers."));
                 return true;
             }
+        }
 
-            if (args.length > 4) {
-                world = args[4];
-            }
-            else {
-                world = ((Player) sender).getWorld().getName();
-            }
-        }
-        else {
-            Location playerLocation = ((Player) sender).getLocation();
-            x = playerLocation.getBlockX();
-            y = playerLocation.getBlockY();
-            z = playerLocation.getBlockZ();
-            world = playerLocation.getWorld().getName();
-        }
-        
-        plugin.getDatabase().saveGlobalCoordinates(name, x, y, z, world);
-        sender.sendMessage(ColorFormat.colorize("&aGlobal coordinate &6" + name + "&a set to &6" + x + " " + y + " " + z + " " + world));
+        if(args.length > 4)
+            global = Boolean.parseBoolean(args[4]);
+        else
+            global = false;
+
+        if(args.length > 5)
+            world = args[5];
+        else
+            world = player.getWorld().getName();
+
+        CoordsObj coordsObj = new CoordsObj(name, player.getUniqueId(),  x, y, z, global ? 1 : 0, world);
+        plugin.getDatabase().saveCoords(coordsObj);
+
+        sender.sendMessage(ColorFormat.colorize("&a"+(global ? "Global " : "") +"Coordinate &6" + name + "&a set to &6" + x + " " + y + " " + z + " " + world));
 
         return true;
     }
@@ -111,11 +113,14 @@ public class GlobalCoordsSet extends CustomSubcommand {
             return suggestCoordinate(playerLocation.getBlockZ(), args[3]);
         }
         else if (args.length == 5) {
+            return List.of("true", "false");
+        }
+        else if (args.length == 6) {
             List<World> worlds = Bukkit.getWorlds();
             List<String> worldNames = new ArrayList<>();
 
             for (World world : worlds) {
-                if (world.getName().startsWith(args[4])) {
+                if (world.getName().startsWith(args[5])) {
                     worldNames.add(world.getName());
                 }
             }
