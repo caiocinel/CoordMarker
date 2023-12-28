@@ -155,7 +155,7 @@ public class Database {
 
     public int getCoordsCount(UUID uuid) {
         try {
-            PreparedStatement statement = conn.prepareStatement("SELECT COUNT(*) FROM Coords WHERE uuid = ?;");
+            PreparedStatement statement = conn.prepareStatement("SELECT COUNT(*) FROM Coords WHERE uuid = ? or global = 1;");
             statement.setString(1, uuid.toString());
             ResultSet result = statement.executeQuery();
 
@@ -171,7 +171,7 @@ public class Database {
 
     public List<CoordsObj> getCoordsList(UUID uuid, int page) {
         try {
-            PreparedStatement statement = conn.prepareStatement("SELECT * FROM Coords WHERE uuid = ? ORDER BY name LIMIT ?, ?;");
+            PreparedStatement statement = conn.prepareStatement("SELECT * FROM Coords WHERE uuid = ? or global = 1 ORDER BY name LIMIT ?, ?;");
             statement.setString(1, uuid.toString());
             statement.setInt(2, (page - 1) * CoordSaver.COORDS_PER_PAGE);
             statement.setInt(3, CoordSaver.COORDS_PER_PAGE);

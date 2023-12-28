@@ -1,5 +1,7 @@
 package me.okay.coordsaver.objects;
 
+import me.okay.coordsaver.utils.ColorFormat;
+
 import java.util.UUID;
 
 public class CoordsObj {
@@ -20,5 +22,9 @@ public class CoordsObj {
         this.z = z;
         this.global = global;
         this.world = world;
+    }
+
+    public String toString() {
+        return ColorFormat.colorize("&b") + name + ColorFormat.colorize(": &3" + x + " " + y + " " + z + " &9" + world + (global == 1 ? " &a(Global)" : ""));
     }
 }

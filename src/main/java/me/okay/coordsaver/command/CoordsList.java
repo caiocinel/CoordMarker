@@ -3,6 +3,7 @@ package me.okay.coordsaver.command;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import me.okay.coordsaver.objects.CoordsObj;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -73,7 +74,7 @@ public class CoordsList extends CustomSubcommand {
             }
         }
 
-        int maxPages = (int) Math.ceil(plugin.getDatabase().getPrivateCoordinatesCount(targetPlayer.getUniqueId()) / (double) CoordSaver.COORDS_PER_PAGE);
+        int maxPages = (int) Math.ceil(plugin.getDatabase().getCoordsCount(targetPlayer.getUniqueId()) / (double) CoordSaver.COORDS_PER_PAGE);
         if (maxPages == 0) {
             sender.sendMessage(ColorFormat.colorize("&c" + (sender == targetPlayer ? "You do" : targetPlayer.getName() + " does") + " not have any coordinates saved."));
             return true;
@@ -83,7 +84,7 @@ public class CoordsList extends CustomSubcommand {
             page = maxPages;
         }
 
-        List<Coordinate> coordinates = plugin.getDatabase().paginatePrivateCoordinates(targetPlayer.getUniqueId(), page);
+        List<CoordsObj> coordinates = plugin.getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
 
         TextComponent backArrow;
         if (page == 1) {
@@ -109,7 +110,7 @@ public class CoordsList extends CustomSubcommand {
 
         sender.sendMessage(CoordSaver.BORDER_LINE);
         sender.spigot().sendMessage(backArrow, centerText, forwardArrow);
-        for (Coordinate coordinate : coordinates) {
+        for (CoordsObj coordinate : coordinates) {
             sender.sendMessage(ColorFormat.colorize("&e- " + coordinate.toString()));
         }
         sender.sendMessage(CoordSaver.BORDER_LINE);
