@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="coordsaver:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/coordsaver_jar</output-path>
+    <root id="archive" name="coordsaver.jar">
+      <element id="module-output" name="coordsaver" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+    </root>
+  </artifact>
+</component>
