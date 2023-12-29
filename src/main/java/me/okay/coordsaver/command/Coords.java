@@ -11,13 +11,12 @@ import me.okay.coordsaver.CustomSubcommand;
 public class Coords extends CustomCommand {
     public Coords(CoordSaver plugin) {
         super(plugin, "coords");
-        
-        addSubcommand(new CoordsSet(plugin));
+
         addSubcommand(new CoordsList(plugin));
         addSubcommand(new CoordsClear(plugin));
-        addSubcommand(new CoordsRemove(plugin));
         addSubcommand(new CoordsCreate(plugin));
         addSubcommand(new CoordsDelete(plugin));
+        addSubcommand(new CoordsGUI(plugin));
     }
 
     @Override

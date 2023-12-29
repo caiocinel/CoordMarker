@@ -1,5 +1,6 @@
 package me.okay.coordsaver;
 
+import nl.odalitadevelopments.menus.OdalitaMenus;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -7,13 +8,15 @@ import me.okay.coordsaver.command.Coords;
 
 public class CoordSaver extends JavaPlugin {
     public static final String BORDER_LINE = ChatColor.DARK_BLUE + "" + ChatColor.STRIKETHROUGH + "----------------------------------------------------";
-    public static final int COORDS_PER_PAGE = 27;
+    public static final int COORDS_PER_PAGE = 7;
 
     private Database database;
 
     @Override
     public void onEnable() {
-        getDataFolder().mkdir();
+        if (!getDataFolder().mkdir())
+            getLogger().info("Data Folder not Created.");
+
         database = new Database(this);
 
         // Commands
@@ -27,5 +30,9 @@ public class CoordSaver extends JavaPlugin {
 
     public Database getDatabase() {
         return database;
+    }
+
+    public static CoordSaver getInstance() {
+        return getPlugin(CoordSaver.class);
     }
 }
