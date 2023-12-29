@@ -1,6 +1,5 @@
 package me.okay.coordsaver;
 
-import nl.odalitadevelopments.menus.OdalitaMenus;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
