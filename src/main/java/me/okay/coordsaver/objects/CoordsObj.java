@@ -1,11 +1,12 @@
 package me.okay.coordsaver.objects;
 
 import me.okay.coordsaver.utils.ColorFormat;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
 public class CoordsObj {
-
     public final String name;
     public final UUID uuid;
     public final int x;
@@ -26,5 +27,13 @@ public class CoordsObj {
 
     public String toString() {
         return ColorFormat.colorize("&b") + name + ColorFormat.colorize(": &3" + x + " " + y + " " + z + " &9" + world + (global == 1 ? " &a(Global)" : ""));
+    }
+
+    public ItemStack toItemStack() {
+        ItemStack item = new ItemStack(Material.COMPASS);
+
+
+
+        return null;
     }
 }

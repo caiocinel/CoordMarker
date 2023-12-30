@@ -2,6 +2,7 @@ package me.okay.coordsaver.command;
 
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.CustomSubcommand;
+import me.okay.coordsaver.menu.CoordsListMenu;
 import me.okay.coordsaver.objects.CoordsObj;
 import me.okay.coordsaver.utils.ColorFormat;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -57,23 +58,8 @@ public class CoordsGUI extends CustomSubcommand {
             }
         }
 
-        List<CoordsObj> coordinates = plugin.getDatabase().getCoordsList(targetPlayer.getUniqueId(), 1);
+        new CoordsListMenu(targetPlayer).displayTo(targetPlayer);
 
-
-        Inventory inv = Bukkit.createInventory(null, 54, ColorFormat.colorize("&6&lCoordinates"));
-
-        for (int i = 0; i < coordinates.size(); i++) {
-            CoordsObj coords = coordinates.get(i);
-            TextComponent text = new TextComponent(ColorFormat.colorize("&e" + coords.name));
-            text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ColorFormat.colorize("&7Click to teleport to this location."))));
-            text.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tp " + coords.x + " " + coords.y + " " + coords.z));
-
-            ItemStack item = new ItemStack(Material.DIAMOND);
-
-            inv.setItem(i, item);
-        }
-
-        targetPlayer.openInventory(inv);
 
         sender.sendMessage("Coords GUI");
 

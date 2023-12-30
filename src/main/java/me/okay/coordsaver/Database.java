@@ -131,7 +131,7 @@ public class Database {
 
             List<CoordsObj> coordinates = new ArrayList<>();
             while (result.next()) {
-                coordinates.add(new CoordsObj(result.getString("name"), uuid, result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world")));
+                coordinates.add(new CoordsObj(result.getString("name"), UUID.fromString(result.getString("uuid")), result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world")));
             }
 
             return coordinates;
