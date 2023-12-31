@@ -27,7 +27,7 @@ public class CoordsGUI extends CustomSubcommand {
             "gui",
             "Open Coords GUI",
             "coordsaver.coords.list",
-            "gui [<player>]"
+            "gui [<page>] [<player>]"
         );
 
         this.plugin = plugin;
@@ -40,9 +40,18 @@ public class CoordsGUI extends CustomSubcommand {
             return true;
         }
 
+        int page = 1;
+
+        if(args.length > 0){
+            try{
+                page = Integer.parseInt(args[0]);
+            } catch (NumberFormatException ignored) {
+                return false;
+            }
+        }
 
         Player targetPlayer;
-        if (args.length < 1) {
+        if (args.length < 2) {
             if (sender instanceof Player)
                 targetPlayer = (Player) sender;
             else {
@@ -51,14 +60,15 @@ public class CoordsGUI extends CustomSubcommand {
             }
         }
         else {
-            targetPlayer = plugin.getServer().getPlayer(args[0]);
+            targetPlayer = plugin.getServer().getPlayer(args[1]);
             if (targetPlayer == null) {
                 sender.sendMessage(ColorFormat.colorize("&cPlayer not found."));
                 return true;
             }
         }
 
-        new CoordsListMenu(targetPlayer).displayTo(targetPlayer);
+
+        new CoordsListMenu(targetPlayer, page).displayTo(targetPlayer);
 
 
         sender.sendMessage("Coords GUI");

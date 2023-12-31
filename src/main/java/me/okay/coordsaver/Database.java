@@ -172,6 +172,26 @@ public class Database {
         }
         return null;
     }
+    public List<CoordsObj> getMyCoordsList(UUID uuid, int page) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("SELECT * FROM Coords WHERE uuid = ? ORDER BY name LIMIT ?, ?;");
+            statement.setString(1, uuid.toString());
+            statement.setInt(2, (page - 1) * CoordSaver.COORDS_PER_PAGE);
+            statement.setInt(3, CoordSaver.COORDS_PER_PAGE);
+            ResultSet result = statement.executeQuery();
+
+            List<CoordsObj> coordinates = new ArrayList<>();
+            while (result.next()) {
+                coordinates.add(new CoordsObj(result.getString("name"), UUID.fromString(result.getString("uuid")), result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world"),  result.getString("item"), result.getString("playerName")));
+            }
+
+            return coordinates;
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+        return null;
+    }
 
     public CoordsObj getCoord(UUID uuid, String name) {
         try {

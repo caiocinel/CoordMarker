@@ -8,7 +8,7 @@ import org.mineacademy.fo.plugin.SimplePlugin;
 
 public class CoordSaver extends SimplePlugin {
     public static final String BORDER_LINE = ChatColor.DARK_BLUE + "" + ChatColor.STRIKETHROUGH + "----------------------------------------------------";
-    public static final int COORDS_PER_PAGE = 7;
+    public static final int COORDS_PER_PAGE = 28;
 
     private Database database;
 

@@ -3,13 +3,11 @@ package me.okay.coordsaver.menu;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
-import org.mineacademy.fo.menu.button.ButtonMenu;
 import org.mineacademy.fo.menu.button.StartPosition;
 import org.mineacademy.fo.menu.button.annotation.Position;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -20,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CoordsListMenu extends Menu {
+public class CoordsDeleteMenu extends Menu {
 
     private final Map<Integer, Button> buttons = new HashMap<>();
 
@@ -37,8 +35,8 @@ public class CoordsListMenu extends Menu {
         return curPosition;
     }
 
-    public CoordsListMenu(Player targetPlayer, int page) {
-        List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
+    public CoordsDeleteMenu(Player targetPlayer, int page) {
+        List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getMyCoordsList(targetPlayer.getUniqueId(), page);
 
 
         int currentPos = 10;
@@ -47,12 +45,13 @@ public class CoordsListMenu extends Menu {
             Button button = new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                    player.teleport(new Location(player.getWorld(), coordinate.x, coordinate.y, coordinate.z, 0, 0));
+                    CoordSaver.getInstance().getDatabase().deleteCoords(player.getUniqueId(), coordinate.name);
+                    new CoordsDeleteMenu(targetPlayer, page).displayTo(player);
                 }
 
                 @Override
                 public ItemStack getItem() {
-                    return ItemCreator.of(CompMaterial.fromString(coordinate.item), "&6&lTeleport to "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format("%s %s %s",coordinate.x, coordinate.y, coordinate.z)).make();
+                    return ItemCreator.of(CompMaterial.fromString(coordinate.item), "&6&lDelete "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format("%s %s %s",coordinate.x, coordinate.y, coordinate.z)).make();
                 }
             };
 
@@ -70,7 +69,7 @@ public class CoordsListMenu extends Menu {
             buttons.put(53, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                    new CoordsListMenu(targetPlayer, page+1).displayTo(player);
+                    new CoordsDeleteMenu(targetPlayer, page+1).displayTo(player);
                 }
 
                 @Override
@@ -83,7 +82,7 @@ public class CoordsListMenu extends Menu {
             buttons.put(45, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                    new CoordsListMenu(targetPlayer, page-1).displayTo(player);
+                    new CoordsDeleteMenu(targetPlayer, page-1).displayTo(player);
                 }
 
                 @Override
@@ -91,20 +90,6 @@ public class CoordsListMenu extends Menu {
                     return ItemCreator.of(CompMaterial.SPECTRAL_ARROW, "Go to page "+(page-1)).make();
                 }
             });
-
-        buttons.put(49, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                new CoordsDeleteMenu(targetPlayer, page).displayTo(player);
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.LAVA_BUCKET, "Delete a Coord").make();
-            }
-        });
-
-
 
         setTitle("&8Main Menu");
         setSize(9 * 6);
@@ -129,7 +114,7 @@ public class CoordsListMenu extends Menu {
         private final Button refillHealthButton;
 
         PreferencesMenu() {
-            super(CoordsListMenu.this);
+            super(CoordsDeleteMenu.this);
 
             setTitle("&8Preferences");
             setSize(9 * 3);
