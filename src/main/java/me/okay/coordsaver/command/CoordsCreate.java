@@ -6,6 +6,7 @@ import me.okay.coordsaver.objects.CoordsObj;
 import me.okay.coordsaver.utils.ColorFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -77,7 +78,7 @@ public class CoordsCreate extends CustomSubcommand {
         else
             world = player.getWorld().getName();
 
-        CoordsObj coordsObj = new CoordsObj(name, player.getUniqueId(),  x, y, z, global ? 1 : 0, world);
+        CoordsObj coordsObj = new CoordsObj(name, player.getUniqueId(),  x, y, z, global ? 1 : 0, world, Material.COMPASS.toString(), player.getName());
         plugin.getDatabase().saveCoords(coordsObj);
 
         sender.sendMessage(ColorFormat.colorize("&a"+(global ? "Global " : "") +"Coordinate &6" + name + "&a set to &6" + x + " " + y + " " + z + " " + world));

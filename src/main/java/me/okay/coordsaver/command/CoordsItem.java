@@ -20,8 +20,8 @@ public class CoordsItem extends CustomSubcommand {
 
     public CoordsItem(CoordSaver plugin) {
         super(
-            "list",
-            "Lists all your saved coordinates",
+            "item",
+            "Set item used to display in menu",
             "coordsaver.coords.list",
             "list [<page>] [<player>]"
         );
@@ -31,87 +31,36 @@ public class CoordsItem extends CustomSubcommand {
 
     @Override
     public boolean onRun(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (args.length > 1 && !sender.hasPermission("coordsaver.coords.list.others")) {
-            sender.sendMessage(ColorFormat.colorize("&cYou do not have permission to view other players' coordinates. &7(coordsaver.coords.list.others)"));
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ColorFormat.colorize("&cThis command can only be run by a player."));
             return true;
         }
 
-        int page;
-        if (args.length < 1) {
-            page = 1;
-        }
-        else {
-            try {
-                page = Integer.parseInt(args[0]);
-            }
-            catch (NumberFormatException e) {
-                sender.sendMessage(ColorFormat.colorize("&cInvalid page number."));
-                return true;
-            }
-
-            if (page < 1) {
-                page = 1;
-            }
-        }
-
-        Player targetPlayer;
-        if (args.length < 2) {
-            if (sender instanceof Player) {
-                targetPlayer = (Player) sender;
-            }
-            else {
-                sender.sendMessage(ColorFormat.colorize("&cYou must specify a player if using this command from console."));
-                return false;
-            }
-        }
-        else {
-            targetPlayer = plugin.getServer().getPlayer(args[1]);
-            if (targetPlayer == null) {
-                sender.sendMessage(ColorFormat.colorize("&cPlayer not found."));
-                return true;
-            }
-        }
-
-        int maxPages = (int) Math.ceil(plugin.getDatabase().getCoordsCount(targetPlayer.getUniqueId()) / (double) CoordSaver.COORDS_PER_PAGE);
-        if (maxPages == 0) {
-            sender.sendMessage(ColorFormat.colorize("&c" + (sender == targetPlayer ? "You do" : targetPlayer.getName() + " does") + " not have any coordinates saved."));
+        if(args.length == 0){
+            sender.sendMessage(ColorFormat.colorize("&cUsage: /coordsaver:coords item <name>"));
             return true;
         }
 
-        if (page > maxPages) {
-            page = maxPages;
+        Player player = (Player) sender;
+
+        CoordsObj coords = plugin.getDatabase().getCoord(((Player) sender).getUniqueId(), args[0]);
+
+        if(coords == null){
+            sender.sendMessage(ColorFormat.colorize("&cCoordinate not found"));
+            return true;
         }
 
-        List<CoordsObj> coordinates = plugin.getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
-
-        TextComponent backArrow;
-        if (page == 1) {
-            backArrow = new TextComponent(ColorFormat.colorize("&7&l<< "));
-        }
-        else {
-            backArrow = new TextComponent(ColorFormat.colorize("&6&l<< "));
-            backArrow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ColorFormat.colorize("&6Go to page " + (page - 1)))));
-            backArrow.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/coordsaver:coords list " + (page - 1)));
+        if(!coords.uuid.toString().equals(player.getUniqueId().toString())){
+            sender.sendMessage(ColorFormat.colorize("&cYou only can change own coordinates"));
+            return true;
         }
 
-        TextComponent forwardArrow;
-        if (page == maxPages) {
-            forwardArrow = new TextComponent(ColorFormat.colorize("&7&l >>"));
-        }
-        else {
-            forwardArrow = new TextComponent(ColorFormat.colorize("&6&l >>"));
-            forwardArrow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ColorFormat.colorize("&6Go to page " + (page + 1)))));
-            forwardArrow.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/coordsaver:coords list " + (page + 1)));
-        }
 
-        TextComponent centerText = new TextComponent(ColorFormat.colorize("&6" + targetPlayer.getName() + "'s Coordinate List: &e(Page " + page + " of " + maxPages + ")"));
+        coords.item = player.getInventory().getItemInMainHand().getType().toString();
 
-        sender.sendMessage(CoordSaver.BORDER_LINE);
-        sender.spigot().sendMessage(backArrow, centerText, forwardArrow);
-        for (CoordsObj coordinate : coordinates) {
-            sender.sendMessage(ColorFormat.colorize("&e- " + coordinate.toString()));
-        }
-        sender.sendMessage(CoordSaver.BORDER_LINE);
+        plugin.getDatabase().saveCoords(coords);
+
+        sender.sendMessage("Block Set");
 
         return true;
     }

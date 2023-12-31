@@ -41,7 +41,7 @@ public class CoordsListMenu extends Menu {
 
                 @Override
                 public ItemStack getItem() {
-                    return ItemCreator.of(CompMaterial.COMPASS, "&6&lTeleport to "+coordinate.name, "UUID: "+coordinate.uuid.toString()+"\nCoords: "+String.format("%s %s %s",coordinate.x, coordinate.y, coordinate.z)).make();
+                    return ItemCreator.of(CompMaterial.fromString(coordinate.item), "&6&lTeleport to "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format("%s %s %s",coordinate.x, coordinate.y, coordinate.z)).make();
                 }
             };
 

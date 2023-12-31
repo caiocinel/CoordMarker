@@ -43,6 +43,18 @@ public class Database {
                 );
             """).execute();
 
+            try {
+                conn.prepareStatement("ALTER TABLE Coords ADD COLUMN item TEXT NOT NULL DEFAULT 'COMPASS';").execute();
+            } catch (SQLException ignored) {}
+
+            try {
+                conn.prepareStatement("ALTER TABLE Coords ADD COLUMN playerName TEXT NOT NULL DEFAULT '';").execute();
+            } catch (SQLException ignored) {}
+
+
+
+
+
         } catch (SQLException e) {
             logger.severe(e.getMessage());
         }
@@ -62,7 +74,7 @@ public class Database {
 
     public void saveCoords(CoordsObj coords) {
         try {
-            PreparedStatement statement = conn.prepareStatement("INSERT OR REPLACE INTO Coords VALUES (?, ?, ?, ?, ?, ?, ?);");
+            PreparedStatement statement = conn.prepareStatement("INSERT OR REPLACE INTO Coords VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
             statement.setString(1, coords.name);
             statement.setString(2, coords.uuid.toString());
             statement.setInt(3, coords.x);
@@ -70,6 +82,8 @@ public class Database {
             statement.setInt(5, coords.z);
             statement.setInt(6, coords.global);
             statement.setString(7, coords.world);
+            statement.setString(8, coords.item);
+            statement.setString(9, coords.playerName);
             statement.execute();
         }
         catch (SQLException e) {
@@ -81,6 +95,23 @@ public class Database {
         try {
             PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE uuid = ? AND name = ?;");
             statement.setString(1, uuid.toString());
+            statement.setString(2, name);
+
+            int deleted = statement.executeUpdate();
+
+            return deleted != 0;
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public boolean forceDeleteCoord(String playerName, String name) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE playerName = ? AND name = ?;");
+            statement.setString(1, playerName);
             statement.setString(2, name);
 
             int deleted = statement.executeUpdate();
@@ -131,10 +162,29 @@ public class Database {
 
             List<CoordsObj> coordinates = new ArrayList<>();
             while (result.next()) {
-                coordinates.add(new CoordsObj(result.getString("name"), UUID.fromString(result.getString("uuid")), result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world")));
+                coordinates.add(new CoordsObj(result.getString("name"), UUID.fromString(result.getString("uuid")), result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world"),  result.getString("item"), result.getString("playerName")));
             }
 
             return coordinates;
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+        return null;
+    }
+
+    public CoordsObj getCoord(UUID uuid, String name) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("SELECT * FROM Coords WHERE (uuid = ? or global = 1) and name = ?;");
+            statement.setString(1, uuid.toString());
+            statement.setString(2, name);
+            ResultSet result = statement.executeQuery();
+
+            if (!result.next()) {
+                return null;
+            }
+
+            return new CoordsObj(result.getString("name"), UUID.fromString(result.getString("uuid")), result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world"), result.getString("item"), result.getString("playerName"));
         }
         catch (SQLException e) {
             logger.severe(e.getMessage());
