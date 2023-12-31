@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.okay.coordsaver.command.Coords;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.mineacademy.fo.plugin.SimplePlugin;
 
 public class CoordSaver extends SimplePlugin {
@@ -14,6 +15,9 @@ public class CoordSaver extends SimplePlugin {
 
     @Override
     public void onPluginStart() {
+
+        AnvilGUI.class.getName();
+
         if (!getDataFolder().mkdir())
             getLogger().info("Data Folder not Created.");
 

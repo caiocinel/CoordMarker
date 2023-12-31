@@ -39,6 +39,10 @@
           <id>jitpack.io</id>
           <url>https://jitpack.io</url>
       </repository>
+      <repository>
+          <id>codemc-snapshots</id>
+          <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+      </repository>
 </repositories>
 
 <dependencies>
@@ -53,6 +57,11 @@
         <groupId>com.github.kangarko</groupId>
         <artifactId>Foundation</artifactId>
         <version>6.6.1</version>
+    </dependency>
+    <dependency>
+        <groupId>net.wesjd</groupId>
+        <artifactId>anvilgui</artifactId>
+        <version>1.9.2-SNAPSHOT</version>
     </dependency>
 </dependencies>
 
@@ -99,6 +108,7 @@
                   <artifactSet>
                       <includes>
                           <include>${foundation.path}:Foundation*</include>
+                          <include>net.wesjd:anvilgui*</include>
                       </includes>
                   </artifactSet>
                   <relocations>
@@ -106,6 +116,10 @@
                       <relocation>
                           <pattern>org.mineacademy.fo</pattern>
                           <shadedPattern>${project.groupId}.${project.artifactId}.lib</shadedPattern>
+                      </relocation>
+                      <relocation>
+                          <pattern>net.wesjd.anvilgui</pattern>
+                          <shadedPattern>${project.groupId}.${project.artifactId}.lib.anvilgui</shadedPattern>
                       </relocation>
                   </relocations>
               </configuration>
