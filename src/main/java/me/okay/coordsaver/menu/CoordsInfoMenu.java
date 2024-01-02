@@ -88,8 +88,7 @@ public class CoordsInfoMenu extends Menu {
                 compass.setItemMeta(compassMeta);
 
                 compass = NBTEditor.set(compass, true, "coordsaver");
-
-                //move hand item to inventory, and give compass
+                
                 player.getInventory().addItem(player.getInventory().getItemInMainHand());
                 player.getInventory().setItemInMainHand(compass);
 
