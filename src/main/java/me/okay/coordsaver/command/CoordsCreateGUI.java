@@ -40,6 +40,14 @@ public class CoordsCreateGUI extends CustomSubcommand {
 
         Player player = (Player) sender;
 
+        boolean global;
+
+        if(args.length > 0)
+            global = Boolean.parseBoolean(args[0]);
+        else {
+            global = false;
+        }
+
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
                     if(slot != AnvilGUI.Slot.OUTPUT) {
@@ -49,18 +57,12 @@ public class CoordsCreateGUI extends CustomSubcommand {
                     String name = stateSnapshot.getText();
 
                     if(name.isBlank())
-                        name = "Saved Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId());
+                        name = (global ? "Global " : "")+"Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId());
 
                     Location playerLocation = player.getLocation();
                     int x = playerLocation.getBlockX();
                     int y = playerLocation.getBlockY();
                     int z = playerLocation.getBlockZ();
-
-                    boolean global = false;
-
-                    if(args.length > 0)
-                        global = Boolean.parseBoolean(args[0]);
-
 
                     CoordsObj coordsObj = new CoordsObj(name, player.getUniqueId(),  x, y, z, global ? 1 : 0, player.getWorld().getName(), Material.COMPASS.toString(), player.getName());
                     plugin.getDatabase().saveCoords(coordsObj);
@@ -69,7 +71,7 @@ public class CoordsCreateGUI extends CustomSubcommand {
                     return Arrays.asList(AnvilGUI.ResponseAction.close());
 
                 })
-                .text("Saved Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId()))
+                .text((global ? "Global " : "")+"Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId()))
                 .title("Name your coordinate")
                 .plugin(CoordSaver.getInstance())
                 .open(player);
