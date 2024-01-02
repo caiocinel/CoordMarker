@@ -44,7 +44,6 @@ public class CoordsInfo extends Menu {
         setTitle("&8Coordinate "+coordinate.name);
         setSize(9 * 3);
 
-
         buttons.put(10, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
@@ -99,18 +98,6 @@ public class CoordsInfo extends Menu {
 
     @Override
     protected boolean isActionAllowed(MenuClickLocation location, int slot, @Nullable ItemStack clicked, @Nullable ItemStack cursor, InventoryAction action) {
-
-        CoordSaver.getInstance().getLogger().info("Slot: "+slot);
-        CoordSaver.getInstance().getLogger().info("Action: "+action.toString());
-        CoordSaver.getInstance().getLogger().info("Location : "+location.toString());
-
-        if(clicked != null)
-            CoordSaver.getInstance().getLogger().info("Clicked: "+clicked.getType().toString());
-
-        if(cursor != null)
-            CoordSaver.getInstance().getLogger().info("Cursor: "+cursor.getType().toString());
-
-
         if(location.equals(MenuClickLocation.PLAYER_INVENTORY))
             return true;
 
