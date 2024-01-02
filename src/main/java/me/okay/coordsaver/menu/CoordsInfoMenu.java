@@ -3,10 +3,13 @@ package me.okay.coordsaver.menu;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
 import org.bukkit.Location;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.CompassMeta;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -14,10 +17,7 @@ import org.mineacademy.fo.menu.model.MenuClickLocation;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CoordsInfoMenu extends Menu {
 
@@ -42,6 +42,27 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(10, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
+                CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
+
+                Objects.requireNonNull(compassMeta);
+
+                compassMeta.setLodestoneTracked(false);
+                compassMeta.setLodestone(new Location(player.getWorld(), coordinate.x, coordinate.y, coordinate.z));
+                compassMeta.setDisplayName("Track "+coordinate.name);
+                compass.setItemMeta(compassMeta);
+                player.getInventory().addItem(compass);
+            }
+
+            @Override
+            public ItemStack getItem() {
+                return ItemCreator.of(CompMaterial.COMPASS, "Track").make();
+            }
+        });
+
+        buttons.put(11, new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
                 player.teleport(new Location(player.getWorld(), coordinate.x, coordinate.y, coordinate.z, 0, 0));
             }
 
@@ -51,7 +72,7 @@ public class CoordsInfoMenu extends Menu {
             }
         });
 
-        buttons.put(11, new Button() {
+        buttons.put(12, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
                 player.closeInventory();
@@ -64,7 +85,7 @@ public class CoordsInfoMenu extends Menu {
             }
         });
 
-        buttons.put(12, new Button() {
+        buttons.put(13, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
                 CoordSaver.getInstance().getLogger().info("Clicked");
@@ -73,6 +94,29 @@ public class CoordsInfoMenu extends Menu {
             @Override
             public ItemStack getItem() {
                 return ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "Change Item", "Drag and drop item here to change").make();
+            }
+        });
+
+        buttons.put(14, new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+
+                coordinate.global = coordinate.global == 1 ? 0 : 1;
+                CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
+                new CoordsInfoMenu(coordinate, targetPlayer).displayTo(targetPlayer);
+            }
+
+            @Override
+            public ItemStack getItem() {
+                CompMaterial item;
+
+                if(coordinate.global == 1)
+                    item = CompMaterial.REDSTONE_TORCH;
+                else
+                    item = CompMaterial.TORCH;
+
+
+                return ItemCreator.of(item, "Visibility", "Allow another users to see this coord\n\nCurrent: "+(coordinate.global == 1 ? "Global ": "Private")).make();
             }
         });
 
