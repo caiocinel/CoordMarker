@@ -56,6 +56,19 @@ public class CoordsInfo extends Menu {
             }
         });
 
+        buttons.put(12, new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                player.closeInventory();
+                player.performCommand("coordsaver:coords rename-gui "+coordinate.name);
+            }
+
+            @Override
+            public ItemStack getItem() {
+                return ItemCreator.of(CompMaterial.PAPER, "Change Item", "Drag and drop item here to change").make();
+            }
+        });
+
         buttons.put(16, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
