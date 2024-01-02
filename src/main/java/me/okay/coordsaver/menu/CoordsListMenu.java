@@ -92,19 +92,37 @@ public class CoordsListMenu extends Menu {
                 }
             });
 
-        buttons.put(49, new Button() {
+        buttons.put(48, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                new CoordsDeleteMenu(targetPlayer, page).displayTo(player);
+                if(click.isRightClick())
+                    player.performCommand("coords create-gui true");
+                else
+                    player.performCommand("coords create-gui");
             }
 
             @Override
             public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.LAVA_BUCKET, "Delete a Coord").make();
+                return ItemCreator.of(CompMaterial.HOPPER, "Public Only", "Create a New Coord in current location\nRight click to create a Public coord").make();
             }
         });
 
+        buttons.put(49, new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                if(click.isRightClick())
+                    player.performCommand("coords create-gui true");
+                else
+                    player.performCommand("coords create-gui");
 
+
+            }
+
+            @Override
+            public ItemStack getItem() {
+                return ItemCreator.of(CompMaterial.GREEN_WOOL, "New Coord", "Create a New Coord in current location\nRight click to create a Public coord").make();
+            }
+        });
 
         setTitle("&8Main Menu");
         setSize(9 * 6);

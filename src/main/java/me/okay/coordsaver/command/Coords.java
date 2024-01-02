@@ -12,7 +12,6 @@ public class Coords extends CustomCommand {
     public Coords(CoordSaver plugin) {
         super(plugin, "coords");
 
-        addSubcommand(new CoordsList(plugin));
         addSubcommand(new CoordsClear(plugin));
         addSubcommand(new CoordsCreate(plugin));
         addSubcommand(new CoordsDelete(plugin));
@@ -24,7 +23,7 @@ public class Coords extends CustomCommand {
     @Override
     public boolean onRun(CommandSender sender, CustomSubcommand command, String label, String[] args) {
         if (args.length == 0) {
-            return Bukkit.dispatchCommand(sender, "coordsaver:coords list");
+            return Bukkit.dispatchCommand(sender, "coordsaver:coords gui");
         }
 
         return false;

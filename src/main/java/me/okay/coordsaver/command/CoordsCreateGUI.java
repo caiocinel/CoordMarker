@@ -2,13 +2,20 @@ package me.okay.coordsaver.command;
 
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.CustomSubcommand;
+import me.okay.coordsaver.objects.CoordsObj;
 import me.okay.coordsaver.utils.ColorFormat;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class CoordsCreateGUI extends CustomSubcommand {
     private final CoordSaver plugin;
@@ -17,7 +24,8 @@ public class CoordsCreateGUI extends CustomSubcommand {
         super(
             "create-gui",
             "Coords Creation with GUI",
-            "coordsaver.coords.clear"
+            "coordsaver.coords.clear",
+            "create-gui [<public = false>]"
         );
 
         this.plugin = plugin;
@@ -33,28 +41,49 @@ public class CoordsCreateGUI extends CustomSubcommand {
         Player player = (Player) sender;
 
         new AnvilGUI.Builder()
-                .onClose(stateSnapshot -> {
-                    stateSnapshot.getPlayer().sendMessage("You closed the inventory.");
-                })
-                .onClick((slot, stateSnapshot) -> { // Either use sync or async variant, not both
+                .onClick((slot, stateSnapshot) -> {
                     if(slot != AnvilGUI.Slot.OUTPUT) {
                         return Collections.emptyList();
                     }
 
-                    if(stateSnapshot.getText().equalsIgnoreCase("you")) {
-                        stateSnapshot.getPlayer().sendMessage("You have magical powers!");
-                        return Arrays.asList(AnvilGUI.ResponseAction.close());
-                    } else {
-                        return Arrays.asList(AnvilGUI.ResponseAction.replaceInputText("Try again"));
-                    }
+                    String name = stateSnapshot.getText();
+
+                    if(name.isBlank())
+                        name = "Saved Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId());
+
+                    Location playerLocation = player.getLocation();
+                    int x = playerLocation.getBlockX();
+                    int y = playerLocation.getBlockY();
+                    int z = playerLocation.getBlockZ();
+
+                    boolean global = false;
+
+                    if(args.length > 0)
+                        global = Boolean.parseBoolean(args[0]);
+
+
+                    CoordsObj coordsObj = new CoordsObj(name, player.getUniqueId(),  x, y, z, global ? 1 : 0, player.getWorld().getName(), Material.COMPASS.toString(), player.getName());
+                    plugin.getDatabase().saveCoords(coordsObj);
+
+                    sender.sendMessage(ColorFormat.colorize("&a"+(global ? "Global " : "") +"Coordinate &6" + name + "&a set to &6" + x + " " + y + " " + z + " " + player.getWorld().getName()));
+                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+
                 })
-                .preventClose()                                                    //prevents the inventory from being closed
-                .text("What is the meaning of life?")                              //sets the text the GUI should start with
-                .title("Enter your answer.")                                       //set the title of the GUI (only works in 1.14+)
-                .plugin(CoordSaver.getInstance())                                          //set the plugin instance
-                .open(player);                                                   //opens the GUI for the player provided
+                .text("Saved Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId()))
+                .title("Name your coordinate")
+                .plugin(CoordSaver.getInstance())
+                .open(player);
 
 
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, CustomSubcommand command, String label, String[] args) {
+        if (args.length == 1) {
+            return List.of("true", "false");
+        }
+
+        return List.of();
     }
 }
