@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public class CoordsItem extends CustomSubcommand {
 
         Player player = (Player) sender;
 
-        CoordsObj coords = plugin.getDatabase().getCoord(((Player) sender).getUniqueId(), args[0]);
+        CoordsObj coords = plugin.getDatabase().getCoord(((Player) sender).getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
 
         if(coords == null){
             sender.sendMessage(ColorFormat.colorize("&cCoordinate not found"));
@@ -58,19 +59,15 @@ public class CoordsItem extends CustomSubcommand {
 
         coords.item = player.getInventory().getItemInMainHand().getType().toString();
 
+        if(coords.item.equals("AIR")) {
+            sender.sendMessage(ColorFormat.colorize("&cYou need have a item in your hands"));
+            return true;
+        }
+
         plugin.getDatabase().saveCoords(coords);
 
         sender.sendMessage("Block Set");
 
         return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (args.length == 2 && sender.hasPermission("coordsaver.coords.list.others")) {
-            return Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(name -> name.startsWith(args[1])).collect(Collectors.toList());
-        }
-
-        return List.of();
     }
 }

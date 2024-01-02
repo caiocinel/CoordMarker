@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CoordsDelete extends CustomSubcommand {
@@ -39,7 +40,7 @@ public class CoordsDelete extends CustomSubcommand {
         if (args.length < 1)
             return false;
 
-        String name = args[0];
+        String name = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
 
         boolean removed = plugin.getDatabase().deleteCoords(player.getUniqueId(), name);
         if (removed) {

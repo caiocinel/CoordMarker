@@ -18,6 +18,7 @@ public class Coords extends CustomCommand {
         addSubcommand(new CoordsGUI(plugin));
         addSubcommand(new CoordsItem(plugin));
         addSubcommand(new CoordsCreateGUI(plugin));
+        addSubcommand(new CoordsRenameGUI(plugin));
     }
 
     @Override

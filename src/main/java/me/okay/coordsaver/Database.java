@@ -91,6 +91,18 @@ public class Database {
         }
     }
 
+    public void renameCoords(String oldName, String newName) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("UPDATE Coords SET name = ? WHERE name = ?;");
+            statement.setString(1, newName);
+            statement.setString(2, oldName);
+            statement.execute();
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+    }
+
     public boolean deleteCoords(UUID uuid, String name) {
         try {
             PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE uuid = ? AND name = ?;");
