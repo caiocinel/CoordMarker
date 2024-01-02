@@ -1,15 +1,19 @@
 package me.okay.coordsaver.menu;
 
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.data.Lightable;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.CompassMeta;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -42,16 +46,59 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(10, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                for(ItemStack item : player.getInventory().getContents()){
+                    if(item == null)
+                        continue;
+
+                    if(!NBTEditor.getBoolean(item, "coordsaver"))
+                        continue;
+
+                    CompassMeta meta = (CompassMeta) item.getItemMeta();
+
+                    if(meta == null)
+                        continue;
+
+                    if(meta.getLodestone() == null)
+                        continue;
+
+                    if(meta.getLodestone().getBlockX() == coordinate.x && meta.getLodestone().getBlockY() == coordinate.y && meta.getLodestone().getBlockZ() == coordinate.z){
+                        player.getInventory().remove(item);
+                        player.getInventory().addItem(player.getInventory().getItemInMainHand());
+                        player.getInventory().setItemInMainHand(item);
+
+                        return;
+                    }else{
+                        player.getInventory().remove(item);
+                    }
+                }
+
+                if(player.getInventory().firstEmpty() == -1){
+                    player.sendMessage("Inventory is full!");
+                    return;
+                }
+
                 ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
                 CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
 
                 Objects.requireNonNull(compassMeta);
 
                 compassMeta.setLodestoneTracked(false);
-                compassMeta.setLodestone(new Location(player.getWorld(), coordinate.x, coordinate.y, coordinate.z));
+                compassMeta.setLodestone(coordinate.getLocation());
                 compassMeta.setDisplayName("Track "+coordinate.name);
                 compass.setItemMeta(compassMeta);
-                player.getInventory().addItem(compass);
+
+                compass = NBTEditor.set(compass, true, "coordsaver");
+
+                //move hand item to inventory, and give compass
+                player.getInventory().addItem(player.getInventory().getItemInMainHand());
+                player.getInventory().setItemInMainHand(compass);
+
+                CoordSaver.TrackedCoords trackedCoords = new CoordSaver.TrackedCoords(player, coordinate);
+                CoordSaver.trackedCoords.put(player.getUniqueId(), trackedCoords);
+
+                player.sendMessage("Tracking "+coordinate.name);
+
+                player.closeInventory();
             }
 
             @Override
@@ -88,7 +135,6 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(13, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                CoordSaver.getInstance().getLogger().info("Clicked");
             }
 
             @Override
@@ -156,7 +202,7 @@ public class CoordsInfoMenu extends Menu {
         if(location.equals(MenuClickLocation.MENU) && cursor == null)
             return false;
 
-        if(location.equals(MenuClickLocation.MENU) && slot == 12 && action == InventoryAction.SWAP_WITH_CURSOR) {
+        if(location.equals(MenuClickLocation.MENU) && slot == 13 && action == InventoryAction.SWAP_WITH_CURSOR) {
             coordinate.item = cursor.getType().toString();
             CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
 

@@ -2,9 +2,11 @@ package me.okay.coordsaver.menu;
 
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.CompassMeta;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -44,7 +46,22 @@ public class CoordsListMenu extends Menu {
 
                 @Override
                 public ItemStack getItem() {
-                    return ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "&6&lTeleport to "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format("%s %s %s",coordinate.x, coordinate.y, coordinate.z)).make();
+                    ItemStack item =  ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "&6&lTeleport to "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format("%s %s %s",coordinate.x, coordinate.y, coordinate.z)).make();
+
+                    if(item.getType().name().equals("COMPASS")) {
+                        ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
+                        CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
+
+                        Objects.requireNonNull(compassMeta);
+
+                        compassMeta.setLodestoneTracked(false);
+                        compassMeta.setLodestone(coordinate.getLocation());
+                        compassMeta.setDisplayName("Track " + coordinate.name);
+                        compass.setItemMeta(compassMeta);
+                    }
+
+
+                    return item;
                 }
             };
 

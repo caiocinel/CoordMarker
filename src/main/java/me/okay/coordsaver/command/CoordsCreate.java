@@ -54,7 +54,7 @@ public class CoordsCreate extends CustomSubcommand {
         {
             Location playerLocation = player.getLocation();
             x = playerLocation.getBlockX();
-            y = playerLocation.getBlockY();
+            y = playerLocation.getBlockY() + 1;
             z = playerLocation.getBlockZ();
         }else{
             try {

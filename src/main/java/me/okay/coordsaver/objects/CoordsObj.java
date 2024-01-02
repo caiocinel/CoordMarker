@@ -1,6 +1,8 @@
 package me.okay.coordsaver.objects;
 
 import me.okay.coordsaver.utils.ColorFormat;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,11 +35,7 @@ public class CoordsObj {
         return ColorFormat.colorize("&b") + name + ColorFormat.colorize(": &3" + x + " " + y + " " + z + " &9" + world + (global == 1 ? " &a(Global)" : ""));
     }
 
-    public ItemStack toItemStack() {
-        ItemStack item = new ItemStack(Material.COMPASS);
-
-
-
-        return null;
+    public Location getLocation() {
+        return new Location(Bukkit.getServer().getWorld(world), x, y, z);
     }
 }

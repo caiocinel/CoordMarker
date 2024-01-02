@@ -61,7 +61,7 @@ public class CoordsCreateGUI extends CustomSubcommand {
 
                     Location playerLocation = player.getLocation();
                     int x = playerLocation.getBlockX();
-                    int y = playerLocation.getBlockY();
+                    int y = playerLocation.getBlockY() + 1;
                     int z = playerLocation.getBlockZ();
 
                     CoordsObj coordsObj = new CoordsObj(name, player.getUniqueId(),  x, y, z, global ? 1 : 0, player.getWorld().getName(), Material.COMPASS.toString(), player.getName());
