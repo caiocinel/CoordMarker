@@ -16,8 +16,6 @@ public class CoordSaver extends SimplePlugin {
     @Override
     public void onPluginStart() {
 
-        AnvilGUI.class.getName();
-
         if (!getDataFolder().mkdir())
             getLogger().info("Data Folder not Created.");
 
