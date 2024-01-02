@@ -34,12 +34,10 @@ public class CoordsCreate extends CustomSubcommand {
         String world;
         boolean global;
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ColorFormat.colorize("&cThis command can only be run by a player."));
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length < 1)
             return false;
@@ -97,11 +95,10 @@ public class CoordsCreate extends CustomSubcommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             return List.of();
         }
 
-        Player player = (Player) sender;
         Location playerLocation = player.getLocation();
 
         if (args.length == 2) {

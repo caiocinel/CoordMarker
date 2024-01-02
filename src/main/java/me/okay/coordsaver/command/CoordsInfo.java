@@ -26,7 +26,7 @@ public class CoordsInfo extends CustomSubcommand {
 
     @Override
     public boolean onRun(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ColorFormat.colorize("&cThis command can only be run by a player."));
             return true;
         }
@@ -35,8 +35,6 @@ public class CoordsInfo extends CustomSubcommand {
             sender.sendMessage(ColorFormat.colorize("&cUsage: /coordsaver:coords info <name>"));
             return true;
         }
-
-        Player player = (Player) sender;
 
         CoordsObj coords = plugin.getDatabase().getCoord(((Player) sender).getUniqueId(), String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
 

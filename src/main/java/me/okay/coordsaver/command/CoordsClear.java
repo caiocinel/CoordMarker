@@ -26,12 +26,10 @@ public class CoordsClear extends CustomSubcommand {
 
     @Override
     public boolean onRun(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ColorFormat.colorize("&cThis command can only be run by a player."));
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length < 1 || !args[0].equals("confirm")) {
             TextComponent message = new TextComponent(ColorFormat.colorize("&6Are you sure you want to clear all your saved coordinates? This cannot be undone. "));
@@ -40,12 +38,12 @@ public class CoordsClear extends CustomSubcommand {
             confirmButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ColorFormat.colorize("&aClick to confirm. &cThis cannot be undone."))));
             confirmButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/coordsaver:coords clear confirm"));
             player.spigot().sendMessage(message, confirmButton);
-            return true;
         }
         else {
             plugin.getDatabase().clearCoords(player.getUniqueId());
             sender.sendMessage(ColorFormat.colorize("&aAll your saved coordinates have been cleared."));
-            return true;
         }
+
+        return true;
     }
 }

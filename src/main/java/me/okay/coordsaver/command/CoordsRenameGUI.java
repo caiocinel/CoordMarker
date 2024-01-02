@@ -5,8 +5,6 @@ import me.okay.coordsaver.CustomSubcommand;
 import me.okay.coordsaver.objects.CoordsObj;
 import me.okay.coordsaver.utils.ColorFormat;
 import net.wesjd.anvilgui.AnvilGUI;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -30,12 +28,10 @@ public class CoordsRenameGUI extends CustomSubcommand {
 
     @Override
     public boolean onRun(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ColorFormat.colorize("&cThis command can only be run by a player."));
             return true;
         }
-
-        Player player = (Player) sender;
 
         if(args.length < 1)
             return false;
@@ -63,18 +59,13 @@ public class CoordsRenameGUI extends CustomSubcommand {
                     if(name.isBlank())
                         return Collections.emptyList();
 
-                    Location playerLocation = player.getLocation();
-                    int x = playerLocation.getBlockX();
-                    int y = playerLocation.getBlockY();
-                    int z = playerLocation.getBlockZ();
-
                     plugin.getDatabase().renameCoords(coord.name, name);
 
                     sender.sendMessage("Coordinate "+coord.name+" renamed to "+name+" successfully.");
 
                     player.performCommand("coordsaver:coords info "+name);
 
-                    return Arrays.asList(AnvilGUI.ResponseAction.close());
+                    return List.of(AnvilGUI.ResponseAction.close());
 
                 })
                 .text(coord.name)

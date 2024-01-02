@@ -2,29 +2,25 @@ package me.okay.coordsaver;
 
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.Getter;
+import me.okay.coordsaver.command.Coords;
 import me.okay.coordsaver.objects.CoordsObj;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.boss.BossBar;
 import org.bukkit.inventory.meta.CompassMeta;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import me.okay.coordsaver.command.Coords;
-import net.wesjd.anvilgui.AnvilGUI;
-import org.mineacademy.fo.menu.button.Button;
-import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class CoordSaver extends SimplePlugin {

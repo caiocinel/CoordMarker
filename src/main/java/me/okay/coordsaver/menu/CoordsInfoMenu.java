@@ -3,17 +3,12 @@ package me.okay.coordsaver.menu;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.data.Lightable;
-import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.CompassMeta;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -88,7 +83,7 @@ public class CoordsInfoMenu extends Menu {
                 compass.setItemMeta(compassMeta);
 
                 compass = NBTEditor.set(compass, true, "coordsaver");
-                
+
                 player.getInventory().addItem(player.getInventory().getItemInMainHand());
                 player.getInventory().setItemInMainHand(compass);
 

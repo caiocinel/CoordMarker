@@ -3,18 +3,10 @@ package me.okay.coordsaver.command;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.CustomSubcommand;
 import me.okay.coordsaver.menu.CoordsListMenu;
-import me.okay.coordsaver.objects.CoordsObj;
 import me.okay.coordsaver.utils.ColorFormat;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.stream.Collectors;
