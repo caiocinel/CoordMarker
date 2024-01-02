@@ -1,22 +1,17 @@
 package me.okay.coordsaver.menu;
 
-import com.palmergames.bukkit.towny.object.Coord;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.menu.model.MenuClickLocation;
 import org.mineacademy.fo.remain.CompMaterial;
-import org.mineacademy.fo.remain.nbt.NBT;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -24,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CoordsInfo extends Menu {
+public class CoordsInfoMenu extends Menu {
 
     private final Map<Integer, Button> buttons = new HashMap<>();
 
@@ -36,12 +31,12 @@ public class CoordsInfo extends Menu {
     CoordsObj coordinate;
     Player targetPlayer;
 
-    public CoordsInfo(CoordsObj coordinate, Player targetPlayer) {
+    public CoordsInfoMenu(CoordsObj coordinate, Player targetPlayer) {
 
         this.coordinate = coordinate;
         this.targetPlayer = targetPlayer;
 
-        setTitle("&8Coordinate "+coordinate.name);
+        setTitle("&8"+coordinate.name);
         setSize(9 * 3);
 
         buttons.put(10, new Button() {
@@ -93,6 +88,19 @@ public class CoordsInfo extends Menu {
                 return ItemCreator.of(CompMaterial.LAVA_BUCKET, "&6&lDelete "+coordinate.name).make();
             }
         });
+
+        buttons.put(18, new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
+                new CoordsListMenu(targetPlayer, 1).displayTo(player);
+            }
+
+            @Override
+            public ItemStack getItem() {
+                return ItemCreator.of(CompMaterial.RED_BED, "Go To Main Menu").make();
+            }
+        });
+
     }
 
 
@@ -108,7 +116,7 @@ public class CoordsInfo extends Menu {
             coordinate.item = cursor.getType().toString();
             CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
 
-            new CoordsInfo(coordinate, targetPlayer).displayTo(targetPlayer);
+            new CoordsInfoMenu(coordinate, targetPlayer).displayTo(targetPlayer);
             return false;
         }
 

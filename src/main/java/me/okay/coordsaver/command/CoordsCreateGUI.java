@@ -68,6 +68,9 @@ public class CoordsCreateGUI extends CustomSubcommand {
                     plugin.getDatabase().saveCoords(coordsObj);
 
                     sender.sendMessage(ColorFormat.colorize("&a"+(global ? "Global " : "") +"Coordinate &6" + name + "&a set to &6" + x + " " + y + " " + z + " " + player.getWorld().getName()));
+
+                    player.performCommand("coordsaver:coords info "+coordsObj.name);
+
                     return Arrays.asList(AnvilGUI.ResponseAction.close());
 
                 })

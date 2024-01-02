@@ -71,6 +71,9 @@ public class CoordsRenameGUI extends CustomSubcommand {
                     plugin.getDatabase().renameCoords(coord.name, name);
 
                     sender.sendMessage("Coordinate "+coord.name+" renamed to "+name+" successfully.");
+
+                    player.performCommand("coordsaver:coords info "+name);
+
                     return Arrays.asList(AnvilGUI.ResponseAction.close());
 
                 })
