@@ -1,8 +1,11 @@
 package me.okay.coordsaver.menu;
 
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
+import me.okay.coordsaver.objects.Enums;
 import me.okay.coordsaver.objects.PreferencesObj;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +37,7 @@ public class CoordsListMenu extends Menu {
     public CoordsListMenu(Player targetPlayer, int page) {
 
         List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
+        PreferencesObj prefs = PreferencesObj.get(targetPlayer.getUniqueId());
 
         int currentPos = 10;
 
@@ -41,7 +45,68 @@ public class CoordsListMenu extends Menu {
             Button button = new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                    new CoordsInfoMenu(coordinate, player).displayTo(player);
+
+                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.INFO)) {
+                        new CoordsInfoMenu(coordinate, player).displayTo(player);
+                        return;
+                    }
+                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT)) {
+                        player.teleport(new Location(player.getWorld(), coordinate.x, coordinate.y, coordinate.z, 0, 0));
+                        return;
+                    }
+
+                    for(ItemStack item : player.getInventory().getContents()){
+                        if(item == null)
+                            continue;
+
+                        if(!NBTEditor.getBoolean(item, "coordsaver"))
+                            continue;
+
+                        CompassMeta meta = (CompassMeta) item.getItemMeta();
+
+                        if(meta == null)
+                            continue;
+
+                        if(meta.getLodestone() == null)
+                            continue;
+
+                        if(meta.getLodestone().getBlockX() == coordinate.x && meta.getLodestone().getBlockY() == coordinate.y && meta.getLodestone().getBlockZ() == coordinate.z){
+                            player.getInventory().remove(item);
+                            player.getInventory().addItem(player.getInventory().getItemInMainHand());
+                            player.getInventory().setItemInMainHand(item);
+
+                            return;
+                        }else{
+                            player.getInventory().remove(item);
+                        }
+                    }
+
+                    if(player.getInventory().firstEmpty() == -1){
+                        player.sendMessage("Inventory is full!");
+                        return;
+                    }
+
+                    ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
+                    CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
+
+                    Objects.requireNonNull(compassMeta);
+
+                    compassMeta.setLodestoneTracked(false);
+                    compassMeta.setLodestone(coordinate.getLocation());
+                    compassMeta.setDisplayName("Track "+coordinate.name);
+                    compass.setItemMeta(compassMeta);
+
+                    compass = NBTEditor.set(compass, true, "coordsaver");
+
+                    player.getInventory().addItem(player.getInventory().getItemInMainHand());
+                    player.getInventory().setItemInMainHand(compass);
+
+                    CoordSaver.TrackedCoords trackedCoords = new CoordSaver.TrackedCoords(player, coordinate);
+                    CoordSaver.trackedCoords.put(player.getUniqueId(), trackedCoords);
+
+                    player.sendMessage("Tracking "+coordinate.name);
+
+                    player.closeInventory();
                 }
 
                 @Override

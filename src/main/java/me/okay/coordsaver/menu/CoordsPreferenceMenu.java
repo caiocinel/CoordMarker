@@ -3,6 +3,7 @@ package me.okay.coordsaver.menu;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.Enums;
+import me.okay.coordsaver.objects.PreferencesObj;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -29,40 +30,81 @@ public class CoordsPreferenceMenu extends Menu {
         setTitle("&8Preferences");
         setSize(9 * 3);
 
+        PreferencesObj prefs = PreferencesObj.get(targetPlayer.getUniqueId());
+
         buttons.put(10, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                targetPlayer.sendMessage("Track");
+                if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.INFO))
+                    prefs.leftClickAction = Enums.LEFT_CLICK_ACTION.TRACK;
+                else if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TRACK))
+                    prefs.leftClickAction = Enums.LEFT_CLICK_ACTION.TELEPORT;
+                else if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT))
+                    prefs.leftClickAction = Enums.LEFT_CLICK_ACTION.INFO;
+
+                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                new CoordsPreferenceMenu(player).displayTo(player);
             }
 
             @Override
             public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.ENDER_PEARL, "Left-click action").make();
+                CompMaterial item = CompMaterial.WRITABLE_BOOK;
+
+                if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TRACK))
+                    item = CompMaterial.COMPASS;
+                if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT))
+                    item = CompMaterial.ENDER_PEARL;
+
+                return ItemCreator.of(item, "Left-click action").make();
             }
         });
 
         buttons.put(11, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                targetPlayer.sendMessage("AAA");
+                if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.ANY))
+                    prefs.defaultFilter = Enums.DEFAULT_FILTER.MY;
+                else if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.MY))
+                    prefs.defaultFilter = Enums.DEFAULT_FILTER.GLOBAL;
+                else
+                    prefs.defaultFilter = Enums.DEFAULT_FILTER.ANY;
+
+                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                new CoordsPreferenceMenu(player).displayTo(player);
             }
 
             @Override
             public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.HOPPER, "Default Filter").make();
+                CompMaterial item = CompMaterial.HOPPER;
+
+                if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.MY))
+                    item = CompMaterial.DECORATED_POT;
+                if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.GLOBAL))
+                    item = CompMaterial.CAULDRON;
+
+                return ItemCreator.of(item, "Default Filter").make();
             }
         });
 
         buttons.put(12, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                if(Enums.DEFAULT_ORDER.valueOf("VISIBILITY").equals(Enums.DEFAULT_ORDER.VISIBILITY))
-                    player.sendMessage("TRUE");
+                if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.NAME))
+                    prefs.defaultOrder = Enums.DEFAULT_ORDER.NAME_REVERSE;
+                else if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.NAME_REVERSE))
+                    prefs.defaultOrder = Enums.DEFAULT_ORDER.VISIBILITY;
+                else if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.VISIBILITY))
+                    prefs.defaultOrder = Enums.DEFAULT_ORDER.VISIBILITY_REVERSE;
+                else
+                    prefs.defaultOrder = Enums.DEFAULT_ORDER.NAME;
+
+                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                new CoordsPreferenceMenu(player).displayTo(player);
             }
 
             @Override
             public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.HOPPER_MINECART, "Default Order").make();
+                return ItemCreator.of(CompMaterial.HOPPER_MINECART, "Default Order", "Current: "+prefs.defaultOrder.toString()).make();
             }
         });
 

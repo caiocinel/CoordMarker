@@ -21,6 +21,7 @@ import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class CoordSaver extends SimplePlugin {
@@ -144,6 +145,9 @@ public class CoordSaver extends SimplePlugin {
         Location loc = meta.getLodestone();
 
         if(loc == null)
+            return;
+
+        if(!event.getPlayer().getWorld().getName().equals(Objects.requireNonNull(loc.getWorld()).getName()))
             return;
 
         int distance = (int) event.getPlayer().getLocation().distance(loc);
