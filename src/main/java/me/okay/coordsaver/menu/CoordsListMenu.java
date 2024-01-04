@@ -2,6 +2,7 @@ package me.okay.coordsaver.menu;
 
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
+import me.okay.coordsaver.objects.PreferencesObj;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -31,8 +32,8 @@ public class CoordsListMenu extends Menu {
     }
 
     public CoordsListMenu(Player targetPlayer, int page) {
-        List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
 
+        List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
 
         int currentPos = 10;
 

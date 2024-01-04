@@ -27,7 +27,7 @@ public class Enums{
     public enum DEFAULT_FILTER{
         ANY,
         GLOBAL,
-        PRIVATE;
+        MY;
 
         @Override
         public String toString() {

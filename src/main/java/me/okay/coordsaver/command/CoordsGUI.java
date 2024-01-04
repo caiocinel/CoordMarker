@@ -3,6 +3,7 @@ package me.okay.coordsaver.command;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.CustomSubcommand;
 import me.okay.coordsaver.menu.CoordsListMenu;
+import me.okay.coordsaver.objects.PreferencesObj;
 import me.okay.coordsaver.utils.ColorFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -58,7 +59,6 @@ public class CoordsGUI extends CustomSubcommand {
                 return true;
             }
         }
-
 
         new CoordsListMenu(targetPlayer, page).displayTo(targetPlayer);
 

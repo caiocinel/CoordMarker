@@ -1,7 +1,9 @@
 package me.okay.coordsaver;
 
 import me.okay.coordsaver.objects.CoordsObj;
+import me.okay.coordsaver.objects.Enums;
 import me.okay.coordsaver.objects.PreferencesObj;
+import org.bukkit.Bukkit;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -55,12 +57,12 @@ public class Database {
             conn.prepareStatement("""
                CREATE TABLE IF NOT EXISTS "UserPreferences" (
                     "uuid" TEXT NOT NULL,
-                    "leftClickAction" TEXT NOT NULL DEFAULT "INFO",
-                    "defaultFilter" TEXT NOT NULL DEFAULT "ANY",
-                    "defaultOrder" TEXT NOT NULL DEFAULT "NAME",
-                    "progressMenuStyle" TEXT NOT NULL DEFAULT "BOSSBAR",
-                    "privateMode" INTEGER NOT NULL DEFAULT 0,
-                    "dimensionFilter" INTEGER NOT NULL DEFAULT 0,
+                    "leftClickAction" TEXT DEFAULT "INFO",
+                    "defaultFilter" TEXT DEFAULT "ANY",
+                    "defaultOrder" TEXT DEFAULT "NAME",
+                    "progressMenuStyle" TEXT DEFAULT "BOSSBAR",
+                    "privateMode" INTEGER DEFAULT 0,
+                    "dimensionFilter" INTEGER DEFAULT 0,
                     PRIMARY KEY("uuid")
                 );
             """).execute();
@@ -89,15 +91,42 @@ public class Database {
             ResultSet result = statement.executeQuery();
 
             if (!result.next()) {
-                return null;
+                newPlayer(uuid);
+                return getPreferences(uuid);
             }
 
-            return new PreferencesObj(result.getString("leftClickAction"), result.getString("defaultFilter"), result.getString("defaultOrder"), result.getString("progressMenuStyle"), result.getInt("privateMode"), result.getInt("dimensionFilter"));
+            return new PreferencesObj(uuid.toString(), result.getString("leftClickAction"), result.getString("defaultFilter"), result.getString("defaultOrder"), result.getString("progressMenuStyle"), result.getInt("privateMode"), result.getInt("dimensionFilter"));
         }
         catch (SQLException e) {
             logger.severe(e.getMessage());
         }
         return null;
+    }
+    public void newPlayer(UUID uuid){
+        try {
+            PreparedStatement statement = conn.prepareStatement("INSERT INTO UserPreferences(uuid) VALUES(?)");
+            statement.setString(1, uuid.toString());
+            statement.execute();
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+    }
+    public void savePreferences(PreferencesObj preferences){
+        try {
+            PreparedStatement statement = conn.prepareStatement("INSERT OR REPLACE INTO UserPreferences VALUES(?, ?, ?, ?, ?, ?, ?)");
+            statement.setString(1, preferences.uuid.toString());
+            statement.setString(2, preferences.leftClickAction.toString());
+            statement.setString(3, preferences.defaultFilter.toString());
+            statement.setString(4, preferences.defaultOrder.toString());
+            statement.setString(5, preferences.progressMenuStyle.toString());
+            statement.setInt(6, preferences.privateMode);
+            statement.setInt(7, preferences.dimensionFilter);
+            statement.execute();
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
     }
 
     public void saveCoords(CoordsObj coords) {
@@ -194,10 +223,43 @@ public class Database {
 
     public List<CoordsObj> getCoordsList(UUID uuid, int page) {
         try {
-            PreparedStatement statement = conn.prepareStatement("SELECT * FROM Coords WHERE uuid = ? or global = 1 ORDER BY name LIMIT ?, ?;");
-            statement.setString(1, uuid.toString());
-            statement.setInt(2, (page - 1) * CoordSaver.COORDS_PER_PAGE);
-            statement.setInt(3, CoordSaver.COORDS_PER_PAGE);
+
+            PreferencesObj prefs = PreferencesObj.get(uuid);
+
+            String sql = "SELECT * FROM Coords WHERE ";
+
+            if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.ANY))
+                sql += "uuid = ? or global = 1 ";
+            if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.MY))
+                sql += "uuid = ? ";
+            if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.GLOBAL))
+                sql += "global = 1 ";
+
+            if((prefs.dimensionFilter == 1) && (Bukkit.getPlayer(uuid.toString()) != null))
+                sql += "world = ? ";
+
+            if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.NAME))
+                sql += "ORDER BY name ";
+            if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.NAME_REVERSE))
+                sql += "ORDER BY name DESC";
+            if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.VISIBILITY))
+                sql += "ORDER BY global ";
+            if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.VISIBILITY_REVERSE))
+                sql += "ORDER BY global DESC ";
+
+            sql += " LIMIT ?, ?;";
+
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            if(sql.contains("uuid = ?"))
+                statement.setString(1, uuid.toString());
+
+            if(sql.contains("world = ?"))
+                statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getPlayer(uuid.toString()).getWorld().getName());
+
+
+            statement.setInt((int)sql.chars().filter(num -> num == '?').count()-1, (page - 1) * CoordSaver.COORDS_PER_PAGE);
+            statement.setInt((int)sql.chars().filter(num -> num == '?').count(), CoordSaver.COORDS_PER_PAGE);
             ResultSet result = statement.executeQuery();
 
             List<CoordsObj> coordinates = new ArrayList<>();
