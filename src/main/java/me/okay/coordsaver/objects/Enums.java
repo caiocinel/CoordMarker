@@ -2,6 +2,7 @@ package me.okay.coordsaver.objects;
 
 public class Enums{
     public enum LEFT_CLICK_ACTION {
+        INFO,
         TELEPORT,
         TRACK;
 
@@ -43,10 +44,6 @@ public class Enums{
         @Override
         public String toString() {
             return super.toString();
-        }
-
-        public static DEFAULT_ORDER fromString(String from){
-            return DEFAULT_ORDER.valueOf(from);
         }
     }
 

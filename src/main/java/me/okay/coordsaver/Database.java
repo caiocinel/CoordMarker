@@ -1,6 +1,7 @@
 package me.okay.coordsaver;
 
 import me.okay.coordsaver.objects.CoordsObj;
+import me.okay.coordsaver.objects.PreferencesObj;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -51,9 +52,18 @@ public class Database {
                 conn.prepareStatement("ALTER TABLE Coords ADD COLUMN playerName TEXT NOT NULL DEFAULT '';").execute();
             } catch (SQLException ignored) {}
 
-
-
-
+            conn.prepareStatement("""
+               CREATE TABLE IF NOT EXISTS "UserPreferences" (
+                    "uuid" TEXT NOT NULL,
+                    "leftClickAction" TEXT NOT NULL DEFAULT "INFO",
+                    "defaultFilter" TEXT NOT NULL DEFAULT "ANY",
+                    "defaultOrder" TEXT NOT NULL DEFAULT "NAME",
+                    "progressMenuStyle" TEXT NOT NULL DEFAULT "BOSSBAR",
+                    "privateMode" INTEGER NOT NULL DEFAULT 0,
+                    "dimensionFilter" INTEGER NOT NULL DEFAULT 0,
+                    PRIMARY KEY("uuid")
+                );
+            """).execute();
 
         } catch (SQLException e) {
             logger.severe(e.getMessage());
@@ -70,6 +80,24 @@ public class Database {
                 e.printStackTrace();
             }
         }
+    }
+
+    public PreferencesObj getPreferences(UUID uuid){
+        try {
+            PreparedStatement statement = conn.prepareStatement("SELECT * FROM UserPreferences where uuid = ?;");
+            statement.setString(1, uuid.toString());
+            ResultSet result = statement.executeQuery();
+
+            if (!result.next()) {
+                return null;
+            }
+
+            return new PreferencesObj(result.getString("leftClickAction"), result.getString("defaultFilter"), result.getString("defaultOrder"), result.getString("progressMenuStyle"), result.getInt("privateMode"), result.getInt("dimensionFilter"));
+        }
+        catch (SQLException e) {
+            logger.severe(e.getMessage());
+        }
+        return null;
     }
 
     public void saveCoords(CoordsObj coords) {

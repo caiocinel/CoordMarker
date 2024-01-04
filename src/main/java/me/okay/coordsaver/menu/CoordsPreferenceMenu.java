@@ -56,7 +56,7 @@ public class CoordsPreferenceMenu extends Menu {
         buttons.put(12, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                if(Enums.DEFAULT_ORDER.fromString("VISIBILITY").equals(Enums.DEFAULT_ORDER.VISIBILITY))
+                if(Enums.DEFAULT_ORDER.valueOf("VISIBILITY").equals(Enums.DEFAULT_ORDER.VISIBILITY))
                     player.sendMessage("TRUE");
             }
 
