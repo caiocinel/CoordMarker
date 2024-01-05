@@ -111,18 +111,6 @@ public class CoordsPreferenceMenu extends Menu {
         buttons.put(13, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                targetPlayer.sendMessage("AAA");
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.END_CRYSTAL, "Progress-menu style").make();
-            }
-        });
-
-        buttons.put(14, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
                 prefs.privateMode = prefs.privateMode == 0 ? 1 : 0;
                 CoordSaver.getInstance().getDatabase().savePreferences(prefs);
                 new CoordsPreferenceMenu(player).displayTo(player);
@@ -139,7 +127,7 @@ public class CoordsPreferenceMenu extends Menu {
             }
         });
 
-        buttons.put(15, new Button() {
+        buttons.put(14, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
                 prefs.dimensionFilter = prefs.dimensionFilter == 0 ? 1 : 0;
