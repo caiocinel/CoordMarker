@@ -229,14 +229,14 @@ public class Database {
             String sql = "SELECT * FROM Coords WHERE ";
 
             if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.ANY))
-                sql += "uuid = ? or global = 1 ";
+                sql += "(uuid = ? or global = 1) ";
             if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.MY))
                 sql += "uuid = ? ";
             if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.GLOBAL))
                 sql += "global = 1 ";
 
-            if((prefs.dimensionFilter == 1) && (Bukkit.getPlayer(uuid.toString()) != null))
-                sql += "world = ? ";
+            if((prefs.dimensionFilter == 1) && (Bukkit.getPlayer(uuid) != null))
+                sql += "and world = ? ";
 
             if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.NAME))
                 sql += "ORDER BY name ";
@@ -249,13 +249,16 @@ public class Database {
 
             sql += " LIMIT ?, ?;";
 
+
+            CoordSaver.getInstance().getLogger().info(sql);
+
             PreparedStatement statement = conn.prepareStatement(sql);
 
             if(sql.contains("uuid = ?"))
                 statement.setString(1, uuid.toString());
 
             if(sql.contains("world = ?"))
-                statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getPlayer(uuid.toString()).getWorld().getName());
+                statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getPlayer(uuid).getWorld().getName());
 
 
             statement.setInt((int)sql.chars().filter(num -> num == '?').count()-1, (page - 1) * CoordSaver.COORDS_PER_PAGE);

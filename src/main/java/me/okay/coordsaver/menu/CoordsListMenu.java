@@ -46,12 +46,17 @@ public class CoordsListMenu extends Menu {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
+                    if(click.isRightClick()){
+                        new CoordsInfoMenu(coordinate, player).displayTo(player);
+                        return;
+                    }
+
                     if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.INFO)) {
                         new CoordsInfoMenu(coordinate, player).displayTo(player);
                         return;
                     }
                     if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT)) {
-                        player.teleport(new Location(player.getWorld(), coordinate.x, coordinate.y, coordinate.z, 0, 0));
+                        player.teleport(coordinate.getLocation());
                         return;
                     }
 
@@ -111,7 +116,7 @@ public class CoordsListMenu extends Menu {
 
                 @Override
                 public ItemStack getItem() {
-                    ItemStack item =  ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "&6&lTeleport to "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format("%s %s %s",coordinate.x, coordinate.y, coordinate.z)).make();
+                    ItemStack item =  ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "&6&lTeleport to "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format((prefs.privateMode == 1 ? ""  : "%s %s %s"),coordinate.x, coordinate.y, coordinate.z)).make();
 
                     if(item.getType().name().equals("COMPASS")) {
                         ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();

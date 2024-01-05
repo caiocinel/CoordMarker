@@ -104,7 +104,7 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(11, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                player.teleport(new Location(player.getWorld(), coordinate.x, coordinate.y, coordinate.z, 0, 0));
+                player.teleport(coordinate.getLocation());
             }
 
             @Override

@@ -123,24 +123,37 @@ public class CoordsPreferenceMenu extends Menu {
         buttons.put(14, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                targetPlayer.sendMessage("AAA");
+                prefs.privateMode = prefs.privateMode == 0 ? 1 : 0;
+                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                new CoordsPreferenceMenu(player).displayTo(player);
             }
 
             @Override
             public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.LANTERN, "Private Mode").make();
+                CompMaterial item = CompMaterial.LANTERN;
+
+                if(prefs.privateMode == 1)
+                    item = CompMaterial.SOUL_LANTERN;
+
+                return ItemCreator.of(item, "Private Mode", "Current: "+(prefs.privateMode == 1 ? "Enabled" : "Disabled")).make();
             }
         });
 
         buttons.put(15, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                targetPlayer.sendMessage("AAA");
+                prefs.dimensionFilter = prefs.dimensionFilter == 0 ? 1 : 0;
+                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                new CoordsPreferenceMenu(player).displayTo(player);
             }
 
             @Override
             public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.GRASS_BLOCK, "Dimension Filter").make();
+                CompMaterial item = CompMaterial.END_STONE;
+
+                if(prefs.dimensionFilter == 1)
+                    item = CompMaterial.GRASS_BLOCK;
+                return ItemCreator.of(item, "Dimension Filter", "Current: "+(prefs.dimensionFilter == 1 ? "Enabled" : "Disabled")).make();
             }
         });
 
