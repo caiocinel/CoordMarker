@@ -249,9 +249,6 @@ public class Database {
 
             sql += " LIMIT ?, ?;";
 
-
-            CoordSaver.getInstance().getLogger().info(sql);
-
             PreparedStatement statement = conn.prepareStatement(sql);
 
             if(sql.contains("uuid = ?"))
