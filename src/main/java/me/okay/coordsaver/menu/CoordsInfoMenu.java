@@ -38,184 +38,204 @@ public class CoordsInfoMenu extends Menu {
         setTitle("&8"+coordinate.name);
         setSize(9 * 3);
 
-        buttons.put(10, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+        int initialPos = 10;
 
-                if(!targetPlayer.hasPermission("coordsaver.track")){
-                    player.sendMessage("You don't have permission to do this");
-                    return;
-                }
+        if(targetPlayer.hasPermission("coordsaver.track")) {
+            buttons.put(initialPos, new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                for(ItemStack item : player.getInventory().getContents()){
-                    if(item == null)
-                        continue;
-
-                    if(!NBTEditor.getBoolean(item, "coordsaver"))
-                        continue;
-
-                    CompassMeta meta = (CompassMeta) item.getItemMeta();
-
-                    if(meta == null)
-                        continue;
-
-                    if(meta.getLodestone() == null)
-                        continue;
-
-                    if(meta.getLodestone().getBlockX() == coordinate.x && meta.getLodestone().getBlockY() == coordinate.y && meta.getLodestone().getBlockZ() == coordinate.z){
-                        player.getInventory().remove(item);
-                        player.getInventory().addItem(player.getInventory().getItemInMainHand());
-                        player.getInventory().setItemInMainHand(item);
-
+                    if (!targetPlayer.hasPermission("coordsaver.track")) {
+                        player.sendMessage("You don't have permission to do this");
                         return;
-                    }else{
-                        player.getInventory().remove(item);
                     }
+
+                    for (ItemStack item : player.getInventory().getContents()) {
+                        if (item == null)
+                            continue;
+
+                        if (!NBTEditor.getBoolean(item, "coordsaver"))
+                            continue;
+
+                        CompassMeta meta = (CompassMeta) item.getItemMeta();
+
+                        if (meta == null)
+                            continue;
+
+                        if (meta.getLodestone() == null)
+                            continue;
+
+                        if (meta.getLodestone().getBlockX() == coordinate.x && meta.getLodestone().getBlockY() == coordinate.y && meta.getLodestone().getBlockZ() == coordinate.z) {
+                            player.getInventory().remove(item);
+                            player.getInventory().addItem(player.getInventory().getItemInMainHand());
+                            player.getInventory().setItemInMainHand(item);
+
+                            return;
+                        } else {
+                            player.getInventory().remove(item);
+                        }
+                    }
+
+                    if (player.getInventory().firstEmpty() == -1) {
+                        player.sendMessage("Inventory is full!");
+                        return;
+                    }
+
+                    ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
+                    CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
+
+                    Objects.requireNonNull(compassMeta);
+
+                    compassMeta.setLodestoneTracked(false);
+                    compassMeta.setLodestone(coordinate.getLocation());
+                    compassMeta.setDisplayName("Track " + coordinate.name);
+                    compass.setItemMeta(compassMeta);
+
+                    compass = NBTEditor.set(compass, true, "coordsaver");
+
+                    player.getInventory().addItem(player.getInventory().getItemInMainHand());
+                    player.getInventory().setItemInMainHand(compass);
+
+                    CoordSaver.TrackedCoords trackedCoords = new CoordSaver.TrackedCoords(player, coordinate);
+                    CoordSaver.trackedCoords.put(player.getUniqueId(), trackedCoords);
+
+                    player.sendMessage("Tracking " + coordinate.name);
+
+                    player.closeInventory();
                 }
 
-                if(player.getInventory().firstEmpty() == -1){
-                    player.sendMessage("Inventory is full!");
-                    return;
+                @Override
+                public ItemStack getItem() {
+                    return ItemCreator.of(CompMaterial.COMPASS, "Track").make();
+                }
+            });
+            initialPos++;
+        }
+
+
+        if(targetPlayer.hasPermission("coordsaver.teleport")) {
+            buttons.put(initialPos, new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                    if (!targetPlayer.hasPermission("coordsaver.teleport")) {
+                        player.sendMessage("You don't have permission to do this");
+                        return;
+                    }
+
+                    player.teleport(coordinate.getLocation());
                 }
 
-                ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
-                CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
+                @Override
+                public ItemStack getItem() {
+                    return ItemCreator.of(CompMaterial.ENDER_PEARL, "Teleport").make();
+                }
+            });
+            initialPos++;
+        }
 
-                Objects.requireNonNull(compassMeta);
+        if(targetPlayer.hasPermission("coordsaver.rename")) {
+            buttons.put(initialPos, new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                compassMeta.setLodestoneTracked(false);
-                compassMeta.setLodestone(coordinate.getLocation());
-                compassMeta.setDisplayName("Track "+coordinate.name);
-                compass.setItemMeta(compassMeta);
+                    if (!targetPlayer.hasPermission("coordsaver.rename")) {
+                        player.sendMessage("You don't have permission to do this");
+                        return;
+                    }
 
-                compass = NBTEditor.set(compass, true, "coordsaver");
+                    if (!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
+                        targetPlayer.sendMessage("You can change only your coordinates");
+                        return;
+                    }
 
-                player.getInventory().addItem(player.getInventory().getItemInMainHand());
-                player.getInventory().setItemInMainHand(compass);
-
-                CoordSaver.TrackedCoords trackedCoords = new CoordSaver.TrackedCoords(player, coordinate);
-                CoordSaver.trackedCoords.put(player.getUniqueId(), trackedCoords);
-
-                player.sendMessage("Tracking "+coordinate.name);
-
-                player.closeInventory();
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.COMPASS, "Track").make();
-            }
-        });
-
-        buttons.put(11, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                if(!targetPlayer.hasPermission("coordsaver.teleport")){
-                    player.sendMessage("You don't have permission to do this");
-                    return;
+                    player.closeInventory();
+                    player.performCommand("coordsaver:coords rename-gui " + coordinate.name);
                 }
 
-                player.teleport(coordinate.getLocation());
-            }
+                @Override
+                public ItemStack getItem() {
+                    return ItemCreator.of(CompMaterial.PAPER, "Rename").make();
+                }
+            });
+            initialPos++;
+        }
 
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.ENDER_PEARL, "Teleport").make();
-            }
-        });
-
-        buttons.put(12, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-
-                if(!targetPlayer.hasPermission("coordsaver.rename")){
-                    player.sendMessage("You don't have permission to do this");
-                    return;
+        if(targetPlayer.hasPermission("coordsaver.changeitem")) {
+            buttons.put(initialPos, new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType click) {
                 }
 
-                if(!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
-                    targetPlayer.sendMessage("You can change only your coordinates");
-                    return;
+                @Override
+                public ItemStack getItem() {
+                    return ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "Change Item", "Drag and drop item here to change").make();
+                }
+            });
+            initialPos++;
+        }
+
+        if(targetPlayer.hasPermission("coordsaver.createglobal")) {
+            buttons.put(initialPos, new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+
+                    if (!targetPlayer.hasPermission("coordsaver.createglobal")) {
+                        player.sendMessage("You don't have permission to do this");
+                        return;
+                    }
+
+                    if (!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
+                        targetPlayer.sendMessage("You can change only your coordinates");
+                        return;
+                    }
+
+                    coordinate.global = coordinate.global == 1 ? 0 : 1;
+                    CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
+                    new CoordsInfoMenu(coordinate, targetPlayer).displayTo(targetPlayer);
                 }
 
-                player.closeInventory();
-                player.performCommand("coordsaver:coords rename-gui "+coordinate.name);
-            }
+                @Override
+                public ItemStack getItem() {
+                    CompMaterial item;
 
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.PAPER, "Rename").make();
-            }
-        });
+                    if (coordinate.global == 1)
+                        item = CompMaterial.REDSTONE_TORCH;
+                    else
+                        item = CompMaterial.TORCH;
 
-        buttons.put(13, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-            }
 
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "Change Item", "Drag and drop item here to change").make();
-            }
-        });
+                    return ItemCreator.of(item, "Visibility", "Allow another users to see this coord\n\nCurrent: " + (coordinate.global == 1 ? "Global " : "Private")).make();
+                }
+            });
+            initialPos++;
+        }
 
-        buttons.put(14, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+        if(targetPlayer.hasPermission("coordsaver.delete")) {
+            buttons.put(16, new Button() {
+                @Override
+                public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                if(!targetPlayer.hasPermission("coordsaver.createglobal")){
-                    player.sendMessage("You don't have permission to do this");
-                    return;
+                    if (!targetPlayer.hasPermission("coordsaver.delete")) {
+                        player.sendMessage("You don't have permission to do this");
+                        return;
+                    }
+
+                    if (!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
+                        targetPlayer.sendMessage("You can change only your coordinates");
+                        return;
+                    }
+
+
+                    player.closeInventory();
+                    player.performCommand("coordsaver:coords delete " + coordinate.name);
                 }
 
-                if(!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
-                    targetPlayer.sendMessage("You can change only your coordinates");
-                    return;
+                @Override
+                public ItemStack getItem() {
+                    return ItemCreator.of(CompMaterial.LAVA_BUCKET, "&6&lDelete " + coordinate.name).make();
                 }
-
-                coordinate.global = coordinate.global == 1 ? 0 : 1;
-                CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
-                new CoordsInfoMenu(coordinate, targetPlayer).displayTo(targetPlayer);
-            }
-
-            @Override
-            public ItemStack getItem() {
-                CompMaterial item;
-
-                if(coordinate.global == 1)
-                    item = CompMaterial.REDSTONE_TORCH;
-                else
-                    item = CompMaterial.TORCH;
-
-
-                return ItemCreator.of(item, "Visibility", "Allow another users to see this coord\n\nCurrent: "+(coordinate.global == 1 ? "Global ": "Private")).make();
-            }
-        });
-
-        buttons.put(16, new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-
-                if(!targetPlayer.hasPermission("coordsaver.delete")){
-                    player.sendMessage("You don't have permission to do this");
-                    return;
-                }
-
-                if(!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
-                    targetPlayer.sendMessage("You can change only your coordinates");
-                    return;
-                }
-
-
-                player.closeInventory();
-                player.performCommand("coordsaver:coords delete "+coordinate.name);
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return ItemCreator.of(CompMaterial.LAVA_BUCKET, "&6&lDelete "+coordinate.name).make();
-            }
-        });
+            });
+        }
 
         buttons.put(18, new Button() {
             @Override
