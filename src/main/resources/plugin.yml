@@ -6,36 +6,100 @@ api-version: 1.19
 
 commands:
   coords:
-    description: "Manage your own coordinates."
+    description: "Open CoordSaver Main Menu."
     usage: "/coords"
+  coords clear:
+    description: "Delete all himself saved coordinates."
+    usage: "/coords clear"
+  coords create:
+    description: "Create a new coordinate using provided parameters."
+    usage: "/coords create <name> [<x> <y> <z>] [private = true] [<world>]"
+  coords delete:
+    description: "Delete saved coordinate with provided name."
+    usage: "/coords delete <name>"
+  coords item:
+    description: "Change coordinate item with that's in hand."
+    usage: "/coords item <name>"
+
   
 permissions:
   coordsaver.admin:
-    description: "Allows use of all CoordSaver commands."
+    description: "Allow access to manage another player coordinates"
     default: op
     children:
-      coordsaver.coords.set: true
-      coordsaver.coords.list: true
-      coordsaver.coords.list.others: true
-      coordsaver.coords.remove: true
-      coordsaver.coords.clear: true
-  
-  coordsaver.coords.set:
-    description: "Allows players to set their own coordinates."
+      coordsaver.full: true
+
+
+  coordsaver.full:
+    description: "Allow use everything."
+    default: op
+    children:
+      coordsaver.list: true
+      coordsaver.clear: true
+      coordsaver.create: true
+      coordsaver.delete: true
+      coordsaver.info: true
+      coordsaver.changeitem: true
+      coordsaver.rename: true
+      coordsaver.createglobal: true
+      coordsaver.teleport: true
+      coordsaver.track: true
+      coordsaver.preferences: true
+      coordsaver.viewglobal: true
+      coordsaver.privatemode: true
+
+
+  coordsaver.list:
+    description: "Allows players to view coordinate list."
     default: true
 
-  coordsaver.coords.list:
-    description: "Allows players to list their own coordinates."
+  coordsaver.clear:
+    description: "Allows players to clear himself coordinates."
     default: true
-    
-  coordsaver.coords.list.others:
-    description: "Allows players to view other players' coordinates."
+
+  coordsaver.create:
+    description: "Allows players to create new coordinates (private only)."
+    default: true
+
+  coordsaver.delete:
+    description: "Allows players to delete a created coordinate."
+    default: true
+
+  coordsaver.info:
+    description: "Allows players to view extended menu from created coordinates."
+    default: true
+
+  coordsaver.changeitem:
+    description: "Allows players to change item used to display a created coordinates."
+    default: true
+
+  coordsaver.rename:
+    description: "Allows players to rename created coordinates."
+    default: true
+
+  coordsaver.createglobal:
+    description: "Allows players to create or set created coordinates as global."
     default: op
 
-  coordsaver.coords.remove:
-    description: "Allows players to remove their own coordinates."
+  coordsaver.teleport:
+    description: "Allows players to teleport directly to coordinate."
+    default: op
+
+  coordsaver.track:
+    description: "Allows players to track coordinates."
     default: true
-  
-  coordsaver.coords.clear:
-    description: "Allows players to clear all their own coordinates."
+
+  coordsaver.preferences:
+    description: "Allows players to change main menu user-preferences."
     default: true
+
+  coordsaver.viewglobal:
+    description: "Allows players to view global coordinates."
+    default: true
+
+  coordsaver.privatemode:
+    description: "Allows players to use private-mode."
+    default: true
+
+
+

@@ -17,7 +17,7 @@ public class CoordsItem extends CustomSubcommand {
             "item",
             "Set item used to display in menu",
             "coordsaver.coords.list",
-            "list [<page>] [<player>]"
+            "item <name>"
         );
 
         this.plugin = plugin;
