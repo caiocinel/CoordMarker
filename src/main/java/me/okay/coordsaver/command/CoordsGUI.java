@@ -19,7 +19,7 @@ public class CoordsGUI extends CustomSubcommand {
         super(
             "gui",
             "Open Coords GUI",
-            "coordsaver.coords.list",
+            "coordsaver.list",
             "gui [<page>] [<player>]"
         );
 
@@ -28,11 +28,6 @@ public class CoordsGUI extends CustomSubcommand {
 
     @Override
     public boolean onRun(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (args.length > 1 && !sender.hasPermission("coordsaver.coords.list.others")) {
-            sender.sendMessage(ColorFormat.colorize("&cYou do not have permission to view other players' coordinates. &7(coordsaver.coords.list.others)"));
-            return true;
-        }
-
         int page = 1;
 
         if(args.length > 0){

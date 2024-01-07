@@ -41,6 +41,12 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(10, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+
+                if(!targetPlayer.hasPermission("coordsaver.track")){
+                    player.sendMessage("You don't have permission to do this");
+                    return;
+                }
+
                 for(ItemStack item : player.getInventory().getContents()){
                     if(item == null)
                         continue;
@@ -104,6 +110,11 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(11, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                if(!targetPlayer.hasPermission("coordsaver.teleport")){
+                    player.sendMessage("You don't have permission to do this");
+                    return;
+                }
+
                 player.teleport(coordinate.getLocation());
             }
 
@@ -116,6 +127,17 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(12, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+
+                if(!targetPlayer.hasPermission("coordsaver.rename")){
+                    player.sendMessage("You don't have permission to do this");
+                    return;
+                }
+
+                if(!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
+                    targetPlayer.sendMessage("You can change only your coordinates");
+                    return;
+                }
+
                 player.closeInventory();
                 player.performCommand("coordsaver:coords rename-gui "+coordinate.name);
             }
@@ -141,6 +163,16 @@ public class CoordsInfoMenu extends Menu {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
+                if(!targetPlayer.hasPermission("coordsaver.createglobal")){
+                    player.sendMessage("You don't have permission to do this");
+                    return;
+                }
+
+                if(!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
+                    targetPlayer.sendMessage("You can change only your coordinates");
+                    return;
+                }
+
                 coordinate.global = coordinate.global == 1 ? 0 : 1;
                 CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
                 new CoordsInfoMenu(coordinate, targetPlayer).displayTo(targetPlayer);
@@ -163,6 +195,18 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(16, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+
+                if(!targetPlayer.hasPermission("coordsaver.delete")){
+                    player.sendMessage("You don't have permission to do this");
+                    return;
+                }
+
+                if(!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
+                    targetPlayer.sendMessage("You can change only your coordinates");
+                    return;
+                }
+
+
                 player.closeInventory();
                 player.performCommand("coordsaver:coords delete "+coordinate.name);
             }
@@ -176,6 +220,11 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(18, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
+                if(!targetPlayer.hasPermission("coordsaver.info")){
+                    player.sendMessage("You don't have permission to do this");
+                    return;
+                }
+
                 new CoordsListMenu(targetPlayer, 1).displayTo(player);
             }
 
@@ -190,6 +239,7 @@ public class CoordsInfoMenu extends Menu {
 
     @Override
     protected boolean isActionAllowed(MenuClickLocation location, int slot, @Nullable ItemStack clicked, @Nullable ItemStack cursor, InventoryAction action) {
+
         if(location.equals(MenuClickLocation.PLAYER_INVENTORY))
             return true;
 
@@ -197,6 +247,17 @@ public class CoordsInfoMenu extends Menu {
             return false;
 
         if(location.equals(MenuClickLocation.MENU) && slot == 13 && action == InventoryAction.SWAP_WITH_CURSOR) {
+
+            if(!targetPlayer.getUniqueId().toString().equals(coordinate.uuid.toString())) {
+                targetPlayer.sendMessage("You can change only your coordinates");
+                return false;
+            }
+
+            if(!targetPlayer.hasPermission("coordsaver.changeitem")){
+                targetPlayer.sendMessage("You don't have permission to do this");
+                return false;
+            }
+
             coordinate.item = cursor.getType().toString();
             CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
 

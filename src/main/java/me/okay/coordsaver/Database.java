@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -227,6 +228,10 @@ public class Database {
             PreferencesObj prefs = PreferencesObj.get(uuid);
 
             String sql = "SELECT * FROM Coords WHERE ";
+
+
+            if(Bukkit.getPlayer(uuid) != null && !Bukkit.getPlayer(uuid).hasPermission("coordsaver.viewglobal"))
+                prefs.defaultFilter = Enums.DEFAULT_FILTER.MY;
 
             if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.ANY))
                 sql += "(uuid = ? or global = 1) ";

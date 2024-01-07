@@ -19,7 +19,7 @@ public class CoordsRenameGUI extends CustomSubcommand {
         super(
             "rename-gui",
             "Coords Renaming with GUI",
-            "coordsaver.coords.clear",
+            "coordsaver.rename",
             "rename-gui [old]"
         );
 

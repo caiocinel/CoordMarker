@@ -20,7 +20,7 @@ public class CoordsCreateGUI extends CustomSubcommand {
         super(
             "create-gui",
             "Coords Creation with GUI",
-            "coordsaver.coords.clear",
+            "coordsaver.create",
             "create-gui [<public = false>]"
         );
 

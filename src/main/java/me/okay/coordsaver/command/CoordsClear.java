@@ -18,7 +18,7 @@ public class CoordsClear extends CustomSubcommand {
         super(
             "clear",
             "Clears all your saved coordinates",
-            "coordsaver.coords.clear"
+            "coordsaver.clear"
         );
 
         this.plugin = plugin;

@@ -21,7 +21,7 @@ public class CoordsCreate extends CustomSubcommand {
         super(
             "create",
             "Create a Marker",
-            "coordsaver.coords.create",
+            "coordsaver.create",
             "create <name> [<x> <y> <z>] [private = true] [<world>]"
         );
 

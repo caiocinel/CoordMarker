@@ -36,6 +36,11 @@ public class CoordsListMenu extends Menu {
 
     public CoordsListMenu(Player targetPlayer, int page) {
 
+        if(!targetPlayer.hasPermission("coordsaver.list")){
+            targetPlayer.sendMessage("You don't have permission to do this");
+            return;
+        }
+
         List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
         PreferencesObj prefs = PreferencesObj.get(targetPlayer.getUniqueId());
 
@@ -46,17 +51,22 @@ public class CoordsListMenu extends Menu {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                    if(click.isRightClick()){
+                    if(click.isRightClick() && targetPlayer.hasPermission("coordsaver.info")){
                         new CoordsInfoMenu(coordinate, player).displayTo(player);
                         return;
                     }
 
-                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.INFO)) {
+                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.INFO) && targetPlayer.hasPermission("coordsaver.info")) {
                         new CoordsInfoMenu(coordinate, player).displayTo(player);
                         return;
                     }
-                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT)) {
+                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT) && targetPlayer.hasPermission("coordsaver.teleport")) {
                         player.teleport(coordinate.getLocation());
+                        return;
+                    }
+
+                    if(!targetPlayer.hasPermission("coordsaver.track")){
+                        targetPlayer.sendMessage("You don't have permission to do this");
                         return;
                     }
 
@@ -191,7 +201,8 @@ public class CoordsListMenu extends Menu {
         buttons.put(50, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                new CoordsPreferenceMenu(player).displayTo(player);
+                if(targetPlayer.hasPermission("coordsaver.preferences"))
+                    new CoordsPreferenceMenu(player).displayTo(player);
             }
 
             @Override

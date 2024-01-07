@@ -15,7 +15,7 @@ public class CoordsDelete extends CustomSubcommand {
         super(
             "delete",
             "Delete a saved coordinate",
-            "coordsaver.coords.delete",
+            "coordsaver.delete",
             "delete <name>"
         );
 

@@ -51,6 +51,12 @@ public class CoordsClearMenu extends Menu {
         buttons.put(15, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                if(!player.hasPermission("coordsaver.clear")){
+                    player.sendMessage("You don't have permission to do this");
+                    return;
+                }
+
+
                 CoordSaver.getInstance().getDatabase().clearCoords(player.getUniqueId());
                 new CoordsListMenu(targetPlayer, 1).displayTo(player);
             }

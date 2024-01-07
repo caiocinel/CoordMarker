@@ -16,7 +16,7 @@ public class CoordsItem extends CustomSubcommand {
         super(
             "item",
             "Set item used to display in menu",
-            "coordsaver.coords.list",
+            "coordsaver.item",
             "item <name>"
         );
 

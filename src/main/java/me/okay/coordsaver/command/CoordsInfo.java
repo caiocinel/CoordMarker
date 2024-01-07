@@ -17,7 +17,7 @@ public class CoordsInfo extends CustomSubcommand {
         super(
             "info",
             "Set item used to display in menu",
-            "coordsaver.coords.list",
+            "coordsaver.info",
             "info [name]"
         );
 
@@ -42,6 +42,7 @@ public class CoordsInfo extends CustomSubcommand {
             sender.sendMessage(ColorFormat.colorize("&cCoordinate not found"));
             return true;
         }
+
 
         new CoordsInfoMenu(coords, player).displayTo(player);
 
