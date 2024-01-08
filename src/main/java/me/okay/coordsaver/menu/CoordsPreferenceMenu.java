@@ -160,7 +160,7 @@ public class CoordsPreferenceMenu extends Menu {
         buttons.put(18, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                new CoordsListMenu(targetPlayer, 1).displayTo(player);
+                new CoordsListMenu(targetPlayer, 1, -1).displayTo(player);
             }
 
             @Override

@@ -3,6 +3,7 @@ package me.okay.coordsaver.menu;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -122,7 +123,16 @@ public class CoordsInfoMenu extends Menu {
                         return;
                     }
 
+                    int exp = player.getExpToLevel();
+
+                    if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < 30){
+                        player.sendMessage("You need at least 30 exp levels to do this");
+                        return;
+                    }
+
                     player.teleport(coordinate.getLocation());
+
+                    player.giveExpLevels(-30);
                 }
 
                 @Override
@@ -245,7 +255,7 @@ public class CoordsInfoMenu extends Menu {
                     return;
                 }
 
-                new CoordsListMenu(targetPlayer, 1).displayTo(player);
+                new CoordsListMenu(targetPlayer, 1, -1).displayTo(player);
             }
 
             @Override

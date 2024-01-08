@@ -222,7 +222,7 @@ public class Database {
         return -1;
     }
 
-    public List<CoordsObj> getCoordsList(UUID uuid, int page) {
+    public List<CoordsObj> getCoordsList(UUID uuid, int page, int filterDimension) {
         try {
 
             PreferencesObj prefs = PreferencesObj.get(uuid);
@@ -240,7 +240,7 @@ public class Database {
             if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.GLOBAL))
                 sql += "global = 1 ";
 
-            if((prefs.dimensionFilter == 1) && (Bukkit.getPlayer(uuid) != null))
+            if((prefs.dimensionFilter == 1) && (Bukkit.getPlayer(uuid) != null) || (filterDimension != -1))
                 sql += "and world = ? ";
 
             if(prefs.defaultOrder.equals(Enums.DEFAULT_ORDER.NAME))
@@ -260,7 +260,11 @@ public class Database {
                 statement.setString(1, uuid.toString());
 
             if(sql.contains("world = ?"))
-                statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getPlayer(uuid).getWorld().getName());
+                if(filterDimension == -1)
+                    statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getPlayer(uuid).getWorld().getName());
+                if(filterDimension == 0)
+                    statement.setString(sql.contains("uuid = ?") ? 2 : 1, "world");
+
 
 
             statement.setInt((int)sql.chars().filter(num -> num == '?').count()-1, (page - 1) * CoordSaver.COORDS_PER_PAGE);

@@ -39,7 +39,7 @@ public class CoordsClearMenu extends Menu {
         buttons.put(11, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                new CoordsListMenu(targetPlayer, 1).displayTo(player);
+                new CoordsListMenu(targetPlayer, 1, -1).displayTo(player);
             }
 
             @Override
@@ -58,7 +58,7 @@ public class CoordsClearMenu extends Menu {
 
 
                 CoordSaver.getInstance().getDatabase().clearCoords(player.getUniqueId());
-                new CoordsListMenu(targetPlayer, 1).displayTo(player);
+                new CoordsListMenu(targetPlayer, 1, -1).displayTo(player);
             }
 
             @Override
@@ -70,7 +70,7 @@ public class CoordsClearMenu extends Menu {
         buttons.put(18, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                new CoordsListMenu(targetPlayer, 1).displayTo(player);
+                new CoordsListMenu(targetPlayer, 1, -1).displayTo(player);
             }
 
             @Override

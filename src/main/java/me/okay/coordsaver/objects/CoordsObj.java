@@ -1,5 +1,6 @@
 package me.okay.coordsaver.objects;
 
+import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.utils.ColorFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,6 +35,6 @@ public class CoordsObj {
     }
 
     public Location getLocation() {
-        return new Location(Bukkit.getServer().getWorld(world), x, y, z);
+        return new Location(Bukkit.getServer().getWorld(world) != null ? Bukkit.getServer().getWorld(world) : Bukkit.getServer().getWorlds().get(0), x, y, z);
     }
 }

@@ -55,7 +55,7 @@ public class CoordsGUI extends CustomSubcommand {
             }
         }
 
-        new CoordsListMenu(targetPlayer, page).displayTo(targetPlayer);
+        new CoordsListMenu(targetPlayer, page, -1).displayTo(targetPlayer);
 
 
         sender.sendMessage("Coords GUI");

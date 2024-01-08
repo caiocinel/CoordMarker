@@ -5,6 +5,9 @@ import me.okay.coordsaver.CoordSaver;
 import me.okay.coordsaver.objects.CoordsObj;
 import me.okay.coordsaver.objects.Enums;
 import me.okay.coordsaver.objects.PreferencesObj;
+import me.okay.coordsaver.utils.ColorFormat;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -34,14 +37,14 @@ public class CoordsListMenu extends Menu {
         return curPosition;
     }
 
-    public CoordsListMenu(Player targetPlayer, int page) {
+    public CoordsListMenu(Player targetPlayer, int page, int filterDimension) {
 
         if(!targetPlayer.hasPermission("coordsaver.list")){
             targetPlayer.sendMessage("You don't have permission to do this");
             return;
         }
 
-        List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page);
+        List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page, filterDimension);
         PreferencesObj prefs = PreferencesObj.get(targetPlayer.getUniqueId());
 
         int currentPos = 10;
@@ -61,7 +64,16 @@ public class CoordsListMenu extends Menu {
                         return;
                     }
                     if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT) && targetPlayer.hasPermission("coordsaver.teleport")) {
+                        int exp = player.getExpToLevel();
+
+                        if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < 30){
+                            player.sendMessage("You need at least 30 exp levels to do this");
+                            return;
+                        }
+
                         player.teleport(coordinate.getLocation());
+
+                        player.giveExpLevels(-30);
                         return;
                     }
 
@@ -104,7 +116,8 @@ public class CoordsListMenu extends Menu {
                     ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
                     CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
 
-                    Objects.requireNonNull(compassMeta);
+                    if(compassMeta == null)
+                        return;
 
                     compassMeta.setLodestoneTracked(false);
                     compassMeta.setLodestone(coordinate.getLocation());
@@ -126,18 +139,43 @@ public class CoordsListMenu extends Menu {
 
                 @Override
                 public ItemStack getItem() {
-                    ItemStack item =  ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), "&6&lTeleport to "+coordinate.name, "Player: "+coordinate.playerName+"\nCoords: "+String.format((prefs.privateMode == 1 ? ""  : "%s %s %s"),coordinate.x, coordinate.y, coordinate.z)).make();
+
+                    String lore = ChatColor.BLUE+"Player: "+coordinate.playerName+"\n";
+
+                    if(coordinate.getLocation().getWorld() != null && !coordinate.getLocation().getWorld().getName().equals(targetPlayer.getWorld().getName()))
+                        lore += ChatColor.DARK_RED+"Dimension: "+coordinate.getLocation().getWorld().getName()+"\n";
+
+                    if(prefs.privateMode == 0)
+                        lore += ChatColor.GOLD+String.format("X:%s | Y:%s | Z:%s\n",coordinate.x, coordinate.y, coordinate.z);
+
+                    if(coordinate.getLocation().getWorld() != null && coordinate.getLocation().getWorld().getName().equals(targetPlayer.getWorld().getName())){
+                        int distance = (int)coordinate.getLocation().distance(targetPlayer.getLocation());
+
+                        if(distance < 200)
+                            lore += ChatColor.DARK_GREEN;
+                        else if(distance <= 500)
+                            lore += ChatColor.YELLOW;
+                        else
+                            lore += ChatColor.DARK_RED;
+
+                        lore += distance + " blocks away\n";
+                    }
+
+                    if(coordinate.global == 1)
+                        lore += ChatColor.DARK_AQUA+"(Global Coordinate)\n";
+
+                    ItemStack item =  ItemCreator.of(CompMaterial.fromString(coordinate.item.equals("AIR") ? "COMPASS" : coordinate.item), ChatColor.GRAY+""+ChatColor.UNDERLINE+coordinate.name, ColorFormat.colorize(lore)).make();
 
                     if(item.getType().name().equals("COMPASS")) {
                         ItemStack compass = ItemCreator.of(CompMaterial.COMPASS, "Track").make();
                         CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
 
-                        Objects.requireNonNull(compassMeta);
-
-                        compassMeta.setLodestoneTracked(false);
-                        compassMeta.setLodestone(coordinate.getLocation());
-                        compassMeta.setDisplayName("Track " + coordinate.name);
-                        compass.setItemMeta(compassMeta);
+                        if(compassMeta != null) {
+                            compassMeta.setLodestoneTracked(false);
+                            compassMeta.setLodestone(coordinate.getLocation());
+                            compassMeta.setDisplayName("Track " + coordinate.name);
+                            compass.setItemMeta(compassMeta);
+                        }
                     }
 
 
@@ -159,7 +197,7 @@ public class CoordsListMenu extends Menu {
             buttons.put(53, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                    new CoordsListMenu(targetPlayer, page+1).displayTo(player);
+                    new CoordsListMenu(targetPlayer, page+1, filterDimension).displayTo(player);
                 }
 
                 @Override
@@ -172,7 +210,7 @@ public class CoordsListMenu extends Menu {
             buttons.put(45, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                    new CoordsListMenu(targetPlayer, page-1).displayTo(player);
+                    new CoordsListMenu(targetPlayer, page-1, filterDimension).displayTo(player);
                 }
 
                 @Override
