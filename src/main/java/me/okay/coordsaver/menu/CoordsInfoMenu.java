@@ -125,14 +125,14 @@ public class CoordsInfoMenu extends Menu {
 
                     int exp = player.getExpToLevel();
 
-                    if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < 30){
+                    if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < CoordSaver.getInstance().getConfig().getInt("teleport-exp-cost")){
                         player.sendMessage("You need at least 30 exp levels to do this");
                         return;
                     }
 
                     player.teleport(coordinate.getLocation());
 
-                    player.giveExpLevels(-30);
+                    player.giveExpLevels(CoordSaver.getInstance().getConfig().getInt("teleport-exp-cost") * -1);
                 }
 
                 @Override

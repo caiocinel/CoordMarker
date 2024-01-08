@@ -9,6 +9,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.boss.BossBar;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -19,6 +21,7 @@ import org.bukkit.inventory.meta.CompassMeta;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -57,6 +60,14 @@ public class CoordSaver extends SimplePlugin {
             getLogger().info("Data Folder not Created.");
 
         database = new Database(this);
+
+        FileConfiguration conf = this.getConfig();
+        conf.options().copyDefaults(true);
+
+        if(this.getConfig().get("teleport-exp-cost") == null)
+            this.getConfig().set("teleport-exp-cost", 0);
+
+        this.saveConfig();
 
         // Commands
         new Coords(this);
@@ -120,7 +131,6 @@ public class CoordSaver extends SimplePlugin {
     public void onPluginStop() {
         database.safeDisconnect();
     }
-
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
