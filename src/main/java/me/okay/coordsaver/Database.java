@@ -259,13 +259,12 @@ public class Database {
             if(sql.contains("uuid = ?"))
                 statement.setString(1, uuid.toString());
 
-            if(sql.contains("world = ?"))
-                if(filterDimension == -1)
+            if(sql.contains("world = ?")) {
+                if (filterDimension == -1)
                     statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getPlayer(uuid).getWorld().getName());
-                if(filterDimension == 0)
-                    statement.setString(sql.contains("uuid = ?") ? 2 : 1, "world");
-
-
+                else
+                    statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getWorlds().get(filterDimension).getName());
+            }
 
             statement.setInt((int)sql.chars().filter(num -> num == '?').count()-1, (page - 1) * CoordSaver.COORDS_PER_PAGE);
             statement.setInt((int)sql.chars().filter(num -> num == '?').count(), CoordSaver.COORDS_PER_PAGE);

@@ -6,9 +6,7 @@ import me.okay.coordsaver.objects.CoordsObj;
 import me.okay.coordsaver.objects.Enums;
 import me.okay.coordsaver.objects.PreferencesObj;
 import me.okay.coordsaver.utils.ColorFormat;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -37,12 +35,20 @@ public class CoordsListMenu extends Menu {
         return curPosition;
     }
 
-    public CoordsListMenu(Player targetPlayer, int page, int filterDimension) {
+    private int filterDimension;
+
+    public CoordsListMenu(Player targetPlayer, int page, int filterDimens) {
 
         if(!targetPlayer.hasPermission("coordsaver.list")){
             targetPlayer.sendMessage("You don't have permission to do this");
             return;
         }
+
+        filterDimension = filterDimens;
+
+        if(filterDimension != -1 && Bukkit.getWorlds().size() < filterDimension+1)
+            filterDimension = -1;
+
 
         List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page, filterDimension);
         PreferencesObj prefs = PreferencesObj.get(targetPlayer.getUniqueId());
@@ -218,6 +224,32 @@ public class CoordsListMenu extends Menu {
                     return ItemCreator.of(CompMaterial.SPECTRAL_ARROW, "Go to page "+(page-1)).make();
                 }
             });
+
+        buttons.put(46, new Button() {
+            @Override
+            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
+                new CoordsListMenu(targetPlayer, page, filterDimension+1).displayTo(player);
+            }
+
+            @Override
+            public ItemStack getItem() {
+                CompMaterial item;
+
+                if(filterDimension != -1) {
+                    String world = Bukkit.getWorlds().get(filterDimension).getName();
+
+                    if (world.contains("nether"))
+                        item = CompMaterial.NETHERRACK;
+                    else if (world.contains("the_end"))
+                        item = CompMaterial.END_STONE;
+                    else
+                        item = CompMaterial.GRASS_BLOCK;
+                }else
+                    item = CompMaterial.WARPED_NYLIUM;
+
+                return ItemCreator.of(item, "Filter Dimension").make();
+            }
+        });
 
         buttons.put(49, new Button() {
             @Override
