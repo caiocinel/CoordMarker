@@ -1,11 +1,11 @@
-package me.okay.coordsaver.menu;
+package com.caiocinel.coordmarker.menu;
 
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.objects.CoordsObj;
+import com.caiocinel.coordmarker.objects.Enums;
+import com.caiocinel.coordmarker.objects.PreferencesObj;
+import com.caiocinel.coordmarker.utils.ColorFormat;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.objects.CoordsObj;
-import me.okay.coordsaver.objects.Enums;
-import me.okay.coordsaver.objects.PreferencesObj;
-import me.okay.coordsaver.utils.ColorFormat;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -39,7 +39,7 @@ public class CoordsListMenu extends Menu {
 
     public CoordsListMenu(Player targetPlayer, int page, int filterDimens) {
 
-        if(!targetPlayer.hasPermission("coordsaver.list")){
+        if(!targetPlayer.hasPermission("coordmarker.list")){
             targetPlayer.sendMessage("You don't have permission to do this");
             return;
         }
@@ -50,7 +50,7 @@ public class CoordsListMenu extends Menu {
             filterDimension = -1;
 
 
-        List<CoordsObj> coordinates = CoordSaver.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page, filterDimension);
+        List<CoordsObj> coordinates = CoordMarker.getInstance().getDatabase().getCoordsList(targetPlayer.getUniqueId(), page, filterDimension);
         PreferencesObj prefs = PreferencesObj.get(targetPlayer.getUniqueId());
 
         int currentPos = 10;
@@ -60,30 +60,30 @@ public class CoordsListMenu extends Menu {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                    if(click.isRightClick() && targetPlayer.hasPermission("coordsaver.info")){
+                    if(click.isRightClick() && targetPlayer.hasPermission("coordmarker.info")){
                         new CoordsInfoMenu(coordinate, player).displayTo(player);
                         return;
                     }
 
-                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.INFO) && targetPlayer.hasPermission("coordsaver.info")) {
+                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.INFO) && targetPlayer.hasPermission("coordmarker.info")) {
                         new CoordsInfoMenu(coordinate, player).displayTo(player);
                         return;
                     }
-                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT) && targetPlayer.hasPermission("coordsaver.teleport")) {
+                    if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT) && targetPlayer.hasPermission("coordmarker.teleport")) {
                         int exp = player.getExpToLevel();
 
-                        if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < CoordSaver.getInstance().getConfig().getInt("teleport-exp-cost")){
+                        if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < CoordMarker.getInstance().getConfig().getInt("teleport-exp-cost")){
                             player.sendMessage("You need at least 30 exp levels to do this");
                             return;
                         }
 
                         player.teleport(coordinate.getLocation());
 
-                        player.giveExpLevels(CoordSaver.getInstance().getConfig().getInt("teleport-exp-cost") * -1);
+                        player.giveExpLevels(CoordMarker.getInstance().getConfig().getInt("teleport-exp-cost") * -1);
                         return;
                     }
 
-                    if(!targetPlayer.hasPermission("coordsaver.track")){
+                    if(!targetPlayer.hasPermission("coordmarker.track")){
                         targetPlayer.sendMessage("You don't have permission to do this");
                         return;
                     }
@@ -92,7 +92,7 @@ public class CoordsListMenu extends Menu {
                         if(item == null)
                             continue;
 
-                        if(!NBTEditor.getBoolean(item, "coordsaver"))
+                        if(!NBTEditor.getBoolean(item, "coordmarker"))
                             continue;
 
                         CompassMeta meta = (CompassMeta) item.getItemMeta();
@@ -130,13 +130,13 @@ public class CoordsListMenu extends Menu {
                     compassMeta.setDisplayName("Track "+coordinate.name);
                     compass.setItemMeta(compassMeta);
 
-                    compass = NBTEditor.set(compass, true, "coordsaver");
+                    compass = NBTEditor.set(compass, true, "coordmarker");
 
                     player.getInventory().addItem(player.getInventory().getItemInMainHand());
                     player.getInventory().setItemInMainHand(compass);
 
-                    CoordSaver.TrackedCoords trackedCoords = new CoordSaver.TrackedCoords(player, coordinate);
-                    CoordSaver.trackedCoords.put(player.getUniqueId(), trackedCoords);
+                    CoordMarker.TrackedCoords trackedCoords = new CoordMarker.TrackedCoords(player, coordinate);
+                    CoordMarker.trackedCoords.put(player.getUniqueId(), trackedCoords);
 
                     player.sendMessage("Tracking "+coordinate.name);
 
@@ -197,7 +197,7 @@ public class CoordsListMenu extends Menu {
 
         }
 
-        int pageCount = (int) Math.ceil(CoordSaver.getInstance().getDatabase().getCoordsCount(targetPlayer.getUniqueId()) / (double) CoordSaver.COORDS_PER_PAGE);
+        int pageCount = (int) Math.ceil(CoordMarker.getInstance().getDatabase().getCoordsCount(targetPlayer.getUniqueId()) / (double) CoordMarker.COORDS_PER_PAGE);
 
         if(pageCount > page)
             buttons.put(53, new Button() {
@@ -271,7 +271,7 @@ public class CoordsListMenu extends Menu {
         buttons.put(50, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                if(targetPlayer.hasPermission("coordsaver.preferences"))
+                if(targetPlayer.hasPermission("coordmarker.preferences"))
                     new CoordsPreferenceMenu(player).displayTo(player);
             }
 

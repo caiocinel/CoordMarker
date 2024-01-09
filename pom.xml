@@ -3,11 +3,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>me.okay1204</groupId>
-  <artifactId>coordsaver</artifactId>
+  <groupId>com.caiocinel</groupId>
+  <artifactId>coordmarker</artifactId>
   <version>1.0</version>
 
-  <name>CoordSaver</name>
+  <name>CoordMarker</name>
 
 
 
@@ -50,7 +50,6 @@
 </repositories>
 
 <dependencies>
-    <!--This adds the Spigot API artifact to the build -->
     <dependency>
            <groupId>org.spigotmc</groupId>
            <artifactId>spigot-api</artifactId>

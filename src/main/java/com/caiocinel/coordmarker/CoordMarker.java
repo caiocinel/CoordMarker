@@ -1,16 +1,15 @@
-package me.okay.coordsaver;
+package com.caiocinel.coordmarker;
 
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import lombok.Getter;
-import me.okay.coordsaver.command.Coords;
-import me.okay.coordsaver.objects.CoordsObj;
+import com.caiocinel.coordmarker.command.Coords;
+import com.caiocinel.coordmarker.objects.CoordsObj;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -21,13 +20,12 @@ import org.bukkit.inventory.meta.CompassMeta;
 import org.mineacademy.fo.plugin.SimplePlugin;
 import org.mineacademy.fo.remain.CompMaterial;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class CoordSaver extends SimplePlugin {
+public class CoordMarker extends SimplePlugin {
     public static final String BORDER_LINE = ChatColor.DARK_BLUE + "" + ChatColor.STRIKETHROUGH + "----------------------------------------------------";
     public static final int COORDS_PER_PAGE = 28;
     public static final int DISTANCE_TOLERANCE = 2;
@@ -98,7 +96,7 @@ public class CoordSaver extends SimplePlugin {
                         if(item == null)
                             continue;
 
-                        if(!NBTEditor.getBoolean(item, "coordsaver"))
+                        if(!NBTEditor.getBoolean(item, "coordmarker"))
                             continue;
 
                         CompassMeta meta = (CompassMeta) item.getItemMeta();
@@ -144,7 +142,7 @@ public class CoordSaver extends SimplePlugin {
         if(!(event.getAction() == Action.RIGHT_CLICK_AIR) && !(event.getAction() == Action.RIGHT_CLICK_BLOCK))
             return;
 
-        if(!NBTEditor.getBoolean(event.getItem(), "coordsaver"))
+        if(!NBTEditor.getBoolean(event.getItem(), "coordmarker"))
             return;
 
         CompassMeta meta = (CompassMeta) event.getItem().getItemMeta();
@@ -180,7 +178,7 @@ public class CoordSaver extends SimplePlugin {
         if(event.getItemDrop().getItemStack().getType() != Material.COMPASS)
             return;
 
-        if(!NBTEditor.getBoolean(event.getItemDrop().getItemStack(), "coordsaver"))
+        if(!NBTEditor.getBoolean(event.getItemDrop().getItemStack(), "coordmarker"))
             return;
 
         event.getItemDrop().remove();
@@ -189,7 +187,7 @@ public class CoordSaver extends SimplePlugin {
         trackedCoords.remove(event.getPlayer().getUniqueId());
     }
 
-    public static CoordSaver getInstance() {
-        return getPlugin(CoordSaver.class);
+    public static CoordMarker getInstance() {
+        return getPlugin(CoordMarker.class);
     }
 }

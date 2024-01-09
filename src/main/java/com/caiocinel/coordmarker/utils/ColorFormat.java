@@ -1,4 +1,4 @@
-package me.okay.coordsaver.utils;
+package com.caiocinel.coordmarker.utils;
 
 import org.bukkit.ChatColor;
 

@@ -1,6 +1,21 @@
-package me.okay.coordsaver.objects;
+package com.caiocinel.coordmarker.objects;
 
 public class Enums{
+
+    public enum CommandResult {
+        SUCCESS,
+        USAGE_FAILURE,
+        PERMISSION_FAILURE;
+
+        public boolean isSuccess() {
+            return this == SUCCESS;
+        }
+
+
+
+    }
+
+
     public enum LEFT_CLICK_ACTION {
         INFO,
         TELEPORT,

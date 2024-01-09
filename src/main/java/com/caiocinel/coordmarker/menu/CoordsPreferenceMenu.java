@@ -1,13 +1,11 @@
-package me.okay.coordsaver.menu;
+package com.caiocinel.coordmarker.menu;
 
-import io.github.bananapuncher714.nbteditor.NBTEditor;
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.objects.Enums;
-import me.okay.coordsaver.objects.PreferencesObj;
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.objects.Enums;
+import com.caiocinel.coordmarker.objects.PreferencesObj;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.CompassMeta;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.Button;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -42,7 +40,7 @@ public class CoordsPreferenceMenu extends Menu {
                 else if(prefs.leftClickAction.equals(Enums.LEFT_CLICK_ACTION.TELEPORT))
                     prefs.leftClickAction = Enums.LEFT_CLICK_ACTION.INFO;
 
-                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                CoordMarker.getInstance().getDatabase().savePreferences(prefs);
                 new CoordsPreferenceMenu(player).displayTo(player);
             }
 
@@ -69,7 +67,7 @@ public class CoordsPreferenceMenu extends Menu {
                 else
                     prefs.defaultFilter = Enums.DEFAULT_FILTER.ANY;
 
-                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                CoordMarker.getInstance().getDatabase().savePreferences(prefs);
                 new CoordsPreferenceMenu(player).displayTo(player);
             }
 
@@ -98,7 +96,7 @@ public class CoordsPreferenceMenu extends Menu {
                 else
                     prefs.defaultOrder = Enums.DEFAULT_ORDER.NAME;
 
-                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                CoordMarker.getInstance().getDatabase().savePreferences(prefs);
                 new CoordsPreferenceMenu(player).displayTo(player);
             }
 
@@ -112,7 +110,7 @@ public class CoordsPreferenceMenu extends Menu {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
                 prefs.privateMode = prefs.privateMode == 0 ? 1 : 0;
-                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                CoordMarker.getInstance().getDatabase().savePreferences(prefs);
                 new CoordsPreferenceMenu(player).displayTo(player);
             }
 
@@ -131,7 +129,7 @@ public class CoordsPreferenceMenu extends Menu {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
                 prefs.dimensionFilter = prefs.dimensionFilter == 0 ? 1 : 0;
-                CoordSaver.getInstance().getDatabase().savePreferences(prefs);
+                CoordMarker.getInstance().getDatabase().savePreferences(prefs);
                 new CoordsPreferenceMenu(player).displayTo(player);
             }
 

@@ -1,4 +1,4 @@
-package me.okay.coordsaver;
+package com.caiocinel.coordmarker;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 
 public abstract class CustomCommand extends CustomSubcommand implements CommandExecutor, TabCompleter {
-    private PluginCommand command;
+    private final PluginCommand command;
 
-    public CustomCommand(CoordSaver plugin, String commandName) {
+    public CustomCommand(CoordMarker plugin, String commandName) {
         super(plugin, commandName);
         
         command = plugin.getCommand(commandName);
@@ -23,7 +23,7 @@ public abstract class CustomCommand extends CustomSubcommand implements CommandE
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {   
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         super.onCommand(sender, this, label, args);
 
         return true;

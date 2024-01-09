@@ -1,10 +1,9 @@
-package me.okay.coordsaver.menu;
+package com.caiocinel.coordmarker.menu;
 
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.objects.CoordsObj;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.objects.CoordsObj;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -41,12 +40,12 @@ public class CoordsInfoMenu extends Menu {
 
         int initialPos = 10;
 
-        if(targetPlayer.hasPermission("coordsaver.track")) {
+        if(targetPlayer.hasPermission("coordmarker.track")) {
             buttons.put(initialPos, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                    if (!targetPlayer.hasPermission("coordsaver.track")) {
+                    if (!targetPlayer.hasPermission("coordmarker.track")) {
                         player.sendMessage("You don't have permission to do this");
                         return;
                     }
@@ -55,7 +54,7 @@ public class CoordsInfoMenu extends Menu {
                         if (item == null)
                             continue;
 
-                        if (!NBTEditor.getBoolean(item, "coordsaver"))
+                        if (!NBTEditor.getBoolean(item, "coordmarker"))
                             continue;
 
                         CompassMeta meta = (CompassMeta) item.getItemMeta();
@@ -92,13 +91,13 @@ public class CoordsInfoMenu extends Menu {
                     compassMeta.setDisplayName("Track " + coordinate.name);
                     compass.setItemMeta(compassMeta);
 
-                    compass = NBTEditor.set(compass, true, "coordsaver");
+                    compass = NBTEditor.set(compass, true, "coordmarker");
 
                     player.getInventory().addItem(player.getInventory().getItemInMainHand());
                     player.getInventory().setItemInMainHand(compass);
 
-                    CoordSaver.TrackedCoords trackedCoords = new CoordSaver.TrackedCoords(player, coordinate);
-                    CoordSaver.trackedCoords.put(player.getUniqueId(), trackedCoords);
+                    CoordMarker.TrackedCoords trackedCoords = new CoordMarker.TrackedCoords(player, coordinate);
+                    CoordMarker.trackedCoords.put(player.getUniqueId(), trackedCoords);
 
                     player.sendMessage("Tracking " + coordinate.name);
 
@@ -114,25 +113,25 @@ public class CoordsInfoMenu extends Menu {
         }
 
 
-        if(targetPlayer.hasPermission("coordsaver.teleport")) {
+        if(targetPlayer.hasPermission("coordmarker.teleport")) {
             buttons.put(initialPos, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                    if (!targetPlayer.hasPermission("coordsaver.teleport")) {
+                    if (!targetPlayer.hasPermission("coordmarker.teleport")) {
                         player.sendMessage("You don't have permission to do this");
                         return;
                     }
 
                     int exp = player.getExpToLevel();
 
-                    if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < CoordSaver.getInstance().getConfig().getInt("teleport-exp-cost")){
+                    if(!player.getGameMode().equals(GameMode.CREATIVE) && exp < CoordMarker.getInstance().getConfig().getInt("teleport-exp-cost")){
                         player.sendMessage("You need at least 30 exp levels to do this");
                         return;
                     }
 
                     player.teleport(coordinate.getLocation());
 
-                    player.giveExpLevels(CoordSaver.getInstance().getConfig().getInt("teleport-exp-cost") * -1);
+                    player.giveExpLevels(CoordMarker.getInstance().getConfig().getInt("teleport-exp-cost") * -1);
                 }
 
                 @Override
@@ -143,12 +142,12 @@ public class CoordsInfoMenu extends Menu {
             initialPos++;
         }
 
-        if(targetPlayer.hasPermission("coordsaver.rename")) {
+        if(targetPlayer.hasPermission("coordmarker.rename")) {
             buttons.put(initialPos, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                    if (!targetPlayer.hasPermission("coordsaver.rename")) {
+                    if (!targetPlayer.hasPermission("coordmarker.rename")) {
                         player.sendMessage("You don't have permission to do this");
                         return;
                     }
@@ -159,7 +158,7 @@ public class CoordsInfoMenu extends Menu {
                     }
 
                     player.closeInventory();
-                    player.performCommand("coordsaver:coords rename-gui " + coordinate.name);
+                    player.performCommand("coordmarker:coords rename-gui " + coordinate.name);
                 }
 
                 @Override
@@ -170,7 +169,7 @@ public class CoordsInfoMenu extends Menu {
             initialPos++;
         }
 
-        if(targetPlayer.hasPermission("coordsaver.changeitem")) {
+        if(targetPlayer.hasPermission("coordmarker.changeitem")) {
             buttons.put(initialPos, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
@@ -184,12 +183,12 @@ public class CoordsInfoMenu extends Menu {
             initialPos++;
         }
 
-        if(targetPlayer.hasPermission("coordsaver.createglobal")) {
+        if(targetPlayer.hasPermission("coordmarker.createglobal")) {
             buttons.put(initialPos, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                    if (!targetPlayer.hasPermission("coordsaver.createglobal")) {
+                    if (!targetPlayer.hasPermission("coordmarker.createglobal")) {
                         player.sendMessage("You don't have permission to do this");
                         return;
                     }
@@ -200,7 +199,7 @@ public class CoordsInfoMenu extends Menu {
                     }
 
                     coordinate.global = coordinate.global == 1 ? 0 : 1;
-                    CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
+                    CoordMarker.getInstance().getDatabase().saveCoords(coordinate);
                     new CoordsInfoMenu(coordinate, targetPlayer).displayTo(targetPlayer);
                 }
 
@@ -220,12 +219,12 @@ public class CoordsInfoMenu extends Menu {
             initialPos++;
         }
 
-        if(targetPlayer.hasPermission("coordsaver.delete")) {
+        if(targetPlayer.hasPermission("coordmarker.delete")) {
             buttons.put(16, new Button() {
                 @Override
                 public void onClickedInMenu(Player player, Menu menu, ClickType click) {
 
-                    if (!targetPlayer.hasPermission("coordsaver.delete")) {
+                    if (!targetPlayer.hasPermission("coordmarker.delete")) {
                         player.sendMessage("You don't have permission to do this");
                         return;
                     }
@@ -237,7 +236,7 @@ public class CoordsInfoMenu extends Menu {
 
 
                     player.closeInventory();
-                    player.performCommand("coordsaver:coords delete " + coordinate.name);
+                    player.performCommand("coordmarker:coords delete " + coordinate.name);
                 }
 
                 @Override
@@ -250,7 +249,7 @@ public class CoordsInfoMenu extends Menu {
         buttons.put(18, new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                if(!targetPlayer.hasPermission("coordsaver.info")){
+                if(!targetPlayer.hasPermission("coordmarker.info")){
                     player.sendMessage("You don't have permission to do this");
                     return;
                 }
@@ -283,13 +282,13 @@ public class CoordsInfoMenu extends Menu {
                 return false;
             }
 
-            if(!targetPlayer.hasPermission("coordsaver.changeitem")){
+            if(!targetPlayer.hasPermission("coordmarker.changeitem")){
                 targetPlayer.sendMessage("You don't have permission to do this");
                 return false;
             }
 
             coordinate.item = cursor.getType().toString();
-            CoordSaver.getInstance().getDatabase().saveCoords(coordinate);
+            CoordMarker.getInstance().getDatabase().saveCoords(coordinate);
 
             new CoordsInfoMenu(coordinate, targetPlayer).displayTo(targetPlayer);
             return false;

@@ -1,12 +1,12 @@
-main: me.okay.coordsaver.CoordSaver
-name: CoordSaver
+main: com.caiocinel.coordmarker.CoordMarker
+name: CoordMarker
 version: 1.0
 author: okay
 api-version: 1.19
 
 commands:
   coords:
-    description: "Open CoordSaver Main Menu."
+    description: "Open Coord Marker Main Menu."
     usage: "/coords"
   coords clear:
     description: "Delete all himself saved coordinates."
@@ -23,81 +23,81 @@ commands:
 
   
 permissions:
-  coordsaver.admin:
+  coordmarker.admin:
     description: "Allow access to manage another player coordinates"
     default: op
     children:
-      coordsaver.full: true
+      coordmarker.full: true
 
 
-  coordsaver.full:
+  coordmarker.full:
     description: "Allow use everything."
     default: op
     children:
-      coordsaver.list: true
-      coordsaver.clear: true
-      coordsaver.create: true
-      coordsaver.delete: true
-      coordsaver.info: true
-      coordsaver.changeitem: true
-      coordsaver.rename: true
-      coordsaver.createglobal: true
-      coordsaver.teleport: true
-      coordsaver.track: true
-      coordsaver.preferences: true
-      coordsaver.viewglobal: true
-      coordsaver.privatemode: true
+      coordmarker.list: true
+      coordmarker.clear: true
+      coordmarker.create: true
+      coordmarker.delete: true
+      coordmarker.info: true
+      coordmarker.changeitem: true
+      coordmarker.rename: true
+      coordmarker.createglobal: true
+      coordmarker.teleport: true
+      coordmarker.track: true
+      coordmarker.preferences: true
+      coordmarker.viewglobal: true
+      coordmarker.privatemode: true
 
 
-  coordsaver.list:
+  coordmarker.list:
     description: "Allows players to view coordinate list."
     default: true
 
-  coordsaver.clear:
+  coordmarker.clear:
     description: "Allows players to clear himself coordinates."
     default: true
 
-  coordsaver.create:
+  coordmarker.create:
     description: "Allows players to create new coordinates (private only)."
     default: true
 
-  coordsaver.delete:
+  coordmarker.delete:
     description: "Allows players to delete a created coordinate."
     default: true
 
-  coordsaver.info:
+  coordmarker.info:
     description: "Allows players to view extended menu from created coordinates."
     default: true
 
-  coordsaver.changeitem:
+  coordmarker.changeitem:
     description: "Allows players to change item used to display a created coordinates."
     default: true
 
-  coordsaver.rename:
+  coordmarker.rename:
     description: "Allows players to rename created coordinates."
     default: true
 
-  coordsaver.createglobal:
+  coordmarker.createglobal:
     description: "Allows players to create or set created coordinates as global."
     default: op
 
-  coordsaver.teleport:
+  coordmarker.teleport:
     description: "Allows players to teleport directly to coordinate."
     default: op
 
-  coordsaver.track:
+  coordmarker.track:
     description: "Allows players to track coordinates."
     default: true
 
-  coordsaver.preferences:
+  coordmarker.preferences:
     description: "Allows players to change main menu user-preferences."
     default: true
 
-  coordsaver.viewglobal:
+  coordmarker.viewglobal:
     description: "Allows players to view global coordinates."
     default: true
 
-  coordsaver.privatemode:
+  coordmarker.privatemode:
     description: "Allows players to use private-mode."
     default: true
 

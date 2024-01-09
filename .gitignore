@@ -3,4 +3,4 @@ target/
 .apt_generated/
 .apt_generated_tests/
 TODO
-out/artifacts/coordsaver_jar/coordsaver.jar
+out/artifacts/coordmarker_jar/coordmarker.jar

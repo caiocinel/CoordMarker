@@ -1,22 +1,22 @@
-package me.okay.coordsaver.command;
+package com.caiocinel.coordmarker.command;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.CustomSubcommand;
-import me.okay.coordsaver.objects.CoordsObj;
-import me.okay.coordsaver.utils.ColorFormat;
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.objects.CoordsObj;
+import com.caiocinel.coordmarker.utils.ColorFormat;
+import com.caiocinel.coordmarker.CustomSubcommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
 public class CoordsItem extends CustomSubcommand {
-    private final CoordSaver plugin;
+    private final CoordMarker plugin;
 
-    public CoordsItem(CoordSaver plugin) {
+    public CoordsItem(CoordMarker plugin) {
         super(
             "item",
             "Set item used to display in menu",
-            "coordsaver.item",
+            "coordmarker.item",
             "item <name>"
         );
 
@@ -31,7 +31,7 @@ public class CoordsItem extends CustomSubcommand {
         }
 
         if(args.length == 0){
-            sender.sendMessage(ColorFormat.colorize("&cUsage: /coordsaver:coords item <name>"));
+            sender.sendMessage(ColorFormat.colorize("&cUsage: /coordmarker:coords item <name>"));
             return true;
         }
 

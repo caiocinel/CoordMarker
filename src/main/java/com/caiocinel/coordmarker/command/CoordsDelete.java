@@ -1,21 +1,21 @@
-package me.okay.coordsaver.command;
+package com.caiocinel.coordmarker.command;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.CustomSubcommand;
-import me.okay.coordsaver.utils.ColorFormat;
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.CustomSubcommand;
+import com.caiocinel.coordmarker.utils.ColorFormat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
 public class CoordsDelete extends CustomSubcommand {
-    private final CoordSaver plugin;
+    private final CoordMarker plugin;
 
-    public CoordsDelete(CoordSaver plugin) {
+    public CoordsDelete(CoordMarker plugin) {
         super(
             "delete",
             "Delete a saved coordinate",
-            "coordsaver.delete",
+            "coordmarker.delete",
             "delete <name>"
         );
 

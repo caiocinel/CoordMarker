@@ -1,9 +1,9 @@
-package me.okay.coordsaver.command;
+package com.caiocinel.coordmarker.command;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.CustomSubcommand;
-import me.okay.coordsaver.objects.CoordsObj;
-import me.okay.coordsaver.utils.ColorFormat;
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.CustomSubcommand;
+import com.caiocinel.coordmarker.objects.CoordsObj;
+import com.caiocinel.coordmarker.utils.ColorFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoordsCreate extends CustomSubcommand {
-    private final CoordSaver plugin;
+    private final CoordMarker plugin;
 
-    public CoordsCreate(CoordSaver plugin) {
+    public CoordsCreate(CoordMarker plugin) {
         super(
             "create",
             "Create a Marker",
-            "coordsaver.create",
+            "coordmarker.create",
             "create <name> [<x> <y> <z>] [private = true] [<world>]"
         );
 

@@ -1,9 +1,9 @@
-package me.okay.coordsaver.command;
+package com.caiocinel.coordmarker.command;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.CustomSubcommand;
-import me.okay.coordsaver.objects.CoordsObj;
-import me.okay.coordsaver.utils.ColorFormat;
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.CustomSubcommand;
+import com.caiocinel.coordmarker.objects.CoordsObj;
+import com.caiocinel.coordmarker.utils.ColorFormat;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,13 +14,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class CoordsCreateGUI extends CustomSubcommand {
-    private final CoordSaver plugin;
+    private final CoordMarker plugin;
 
-    public CoordsCreateGUI(CoordSaver plugin) {
+    public CoordsCreateGUI(CoordMarker plugin) {
         super(
             "create-gui",
             "Coords Creation with GUI",
-            "coordsaver.create",
+            "coordmarker.create",
             "create-gui [<public = false>]"
         );
 
@@ -51,7 +51,7 @@ public class CoordsCreateGUI extends CustomSubcommand {
                     String name = stateSnapshot.getText();
 
                     if(name.isBlank())
-                        name = (global ? "Global " : "")+"Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId());
+                        name = (global ? "Global " : "")+"Coordinate "+ CoordMarker.getInstance().getDatabase().getCoordsCount(player.getUniqueId());
 
                     Location playerLocation = player.getLocation();
                     int x = playerLocation.getBlockX();
@@ -63,14 +63,14 @@ public class CoordsCreateGUI extends CustomSubcommand {
 
                     sender.sendMessage(ColorFormat.colorize("&a"+(global ? "Global " : "") +"Coordinate &6" + name + "&a set to &6" + x + " " + y + " " + z + " " + player.getWorld().getName()));
 
-                    player.performCommand("coordsaver:coords info "+coordsObj.name);
+                    player.performCommand("coordmarker:coords info "+coordsObj.name);
 
                     return List.of(AnvilGUI.ResponseAction.close());
 
                 })
-                .text((global ? "Global " : "")+"Coordinate "+CoordSaver.getInstance().getDatabase().getCoordsCount(player.getUniqueId()))
+                .text((global ? "Global " : "")+"Coordinate "+ CoordMarker.getInstance().getDatabase().getCoordsCount(player.getUniqueId()))
                 .title("Name your coordinate")
-                .plugin(CoordSaver.getInstance())
+                .plugin(CoordMarker.getInstance())
                 .open(player);
 
 

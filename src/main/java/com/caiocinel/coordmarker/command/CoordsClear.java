@@ -1,24 +1,24 @@
-package me.okay.coordsaver.command;
+package com.caiocinel.coordmarker.command;
 
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.utils.ColorFormat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.CustomSubcommand;
-import me.okay.coordsaver.utils.ColorFormat;
+import com.caiocinel.coordmarker.CustomSubcommand;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
 public class CoordsClear extends CustomSubcommand {
-    private final CoordSaver plugin;
+    private final CoordMarker plugin;
 
-    public CoordsClear(CoordSaver plugin) {
+    public CoordsClear(CoordMarker plugin) {
         super(
             "clear",
             "Clears all your saved coordinates",
-            "coordsaver.clear"
+            "coordmarker.clear"
         );
 
         this.plugin = plugin;
@@ -36,7 +36,7 @@ public class CoordsClear extends CustomSubcommand {
 
             TextComponent confirmButton = new TextComponent(ColorFormat.colorize("&a&l[Click to confirm]"));
             confirmButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ColorFormat.colorize("&aClick to confirm. &cThis cannot be undone."))));
-            confirmButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/coordsaver:coords clear confirm"));
+            confirmButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/coordmarker:coords clear confirm"));
             player.spigot().sendMessage(message, confirmButton);
         }
         else {

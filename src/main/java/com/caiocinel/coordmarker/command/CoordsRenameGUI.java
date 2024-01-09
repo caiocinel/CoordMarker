@@ -1,9 +1,9 @@
-package me.okay.coordsaver.command;
+package com.caiocinel.coordmarker.command;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.CustomSubcommand;
-import me.okay.coordsaver.objects.CoordsObj;
-import me.okay.coordsaver.utils.ColorFormat;
+import com.caiocinel.coordmarker.CoordMarker;
+import com.caiocinel.coordmarker.objects.CoordsObj;
+import com.caiocinel.coordmarker.utils.ColorFormat;
+import com.caiocinel.coordmarker.CustomSubcommand;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,13 +13,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class CoordsRenameGUI extends CustomSubcommand {
-    private final CoordSaver plugin;
+    private final CoordMarker plugin;
 
-    public CoordsRenameGUI(CoordSaver plugin) {
+    public CoordsRenameGUI(CoordMarker plugin) {
         super(
             "rename-gui",
             "Coords Renaming with GUI",
-            "coordsaver.rename",
+            "coordmarker.rename",
             "rename-gui [old]"
         );
 
@@ -63,14 +63,14 @@ public class CoordsRenameGUI extends CustomSubcommand {
 
                     sender.sendMessage("Coordinate "+coord.name+" renamed to "+name+" successfully.");
 
-                    player.performCommand("coordsaver:coords info "+name);
+                    player.performCommand("coordmarker:coords info "+name);
 
                     return List.of(AnvilGUI.ResponseAction.close());
 
                 })
                 .text(coord.name)
                 .title("Renaming "+coord.name)
-                .plugin(CoordSaver.getInstance())
+                .plugin(CoordMarker.getInstance())
                 .open(player);
 
 

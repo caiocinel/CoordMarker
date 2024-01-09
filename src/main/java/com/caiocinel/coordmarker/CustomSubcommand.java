@@ -1,25 +1,25 @@
-package me.okay.coordsaver;
+package com.caiocinel.coordmarker;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.caiocinel.coordmarker.objects.Enums;
+import com.caiocinel.coordmarker.utils.ColorFormat;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import me.okay.coordsaver.utils.ColorFormat;
-
 public abstract class CustomSubcommand {
     protected static final String NO_PERMS_MESSAGE = ChatColor.RED + "I'm sorry, but you do not have permission to perform this command. " +
     "Please contact the server administrators if you believe that this is a mistake.";
-    private ArrayList<CustomSubcommand> subcommands = new ArrayList<CustomSubcommand>();
+    private final ArrayList<CustomSubcommand> subcommands = new ArrayList<CustomSubcommand>();
     private CustomSubcommand parent = null;
 
-    private String name;
-    private String description;
-    private String permission;
-    private String usage;
-    private String permissionMessage;
+    private final String name;
+    private final String description;
+    private final String permission;
+    private final String usage;
+    private final String permissionMessage;
 
     public CustomSubcommand(String name, String description, String permission) {
         this(name, description, permission, name);
@@ -37,7 +37,7 @@ public abstract class CustomSubcommand {
         this.permissionMessage = permissionMessage;
     }
 
-    public CustomSubcommand(CoordSaver plugin, String name) {
+    public CustomSubcommand(CoordMarker plugin, String name) {
         this.name = name;
         Command command = plugin.getCommand(name);
         this.description = command.getDescription();
@@ -50,14 +50,6 @@ public abstract class CustomSubcommand {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getUsage() {
-        return usage;
-    }
-
     public String getFullUsage() {
         if (parent != null) {
             return parent.getFullUsage() + " " + usage;
@@ -65,10 +57,6 @@ public abstract class CustomSubcommand {
         else {
             return usage;
         }
-    }
-
-    public String getPermission() {
-        return permission;
     }
 
     protected void addSubcommand(CustomSubcommand subcommand) {
@@ -84,10 +72,6 @@ public abstract class CustomSubcommand {
         this.parent = parent;
     }
 
-    public CustomSubcommand getParent() {
-        return parent;
-    }
-
     public String getPermissionMessage() {
         return permissionMessage;
     }
@@ -100,8 +84,8 @@ public abstract class CustomSubcommand {
         return newArgs;
     }
 
-    public CommandResult onCommand(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (subcommands.size() > 0) {
+    public Enums.CommandResult onCommand(CommandSender sender, CustomSubcommand command, String label, String[] args) {
+        if (!subcommands.isEmpty()) {
             if (args.length > 0) {
                 for (CustomSubcommand subcommand : subcommands) {
                     if (subcommand.getName().equals(args[0])) {
@@ -119,25 +103,25 @@ public abstract class CustomSubcommand {
                 }
     
                 sender.sendMessage(allUsages);
-                return CommandResult.USAGE_FAILURE;
+                return Enums.CommandResult.USAGE_FAILURE;
             }
             else {
-                return CommandResult.SUCCESS;
+                return Enums.CommandResult.SUCCESS;
             }
         }
         else {
             if (permission != null && !sender.hasPermission(permission)) {
                 sender.sendMessage(getPermissionMessage());
-                return CommandResult.PERMISSION_FAILURE;
+                return Enums.CommandResult.PERMISSION_FAILURE;
             }
             else {
                 boolean isSuccessful = onRun(sender, command, label, args);
                 if (isSuccessful) {
-                    return CommandResult.SUCCESS;
+                    return Enums.CommandResult.SUCCESS;
                 }
                 else {
                     sender.sendMessage(ColorFormat.colorize("&cUsage: ") + getFullUsage());
-                    return CommandResult.USAGE_FAILURE;
+                    return Enums.CommandResult.USAGE_FAILURE;
                 }
             }
         }
@@ -148,7 +132,7 @@ public abstract class CustomSubcommand {
     };
 
     public List<String> onTabComplete(CommandSender sender, CustomSubcommand command, String label, String[] args) {
-        if (getSubcommands().size() > 0) {
+        if (!getSubcommands().isEmpty()) {
             List<String> tabCompleteStrings = new ArrayList<String>();
 
             if (args.length == 1) {

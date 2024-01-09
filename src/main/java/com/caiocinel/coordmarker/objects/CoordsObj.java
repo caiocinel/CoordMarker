@@ -1,7 +1,6 @@
-package me.okay.coordsaver.objects;
+package com.caiocinel.coordmarker.objects;
 
-import me.okay.coordsaver.CoordSaver;
-import me.okay.coordsaver.utils.ColorFormat;
+import com.caiocinel.coordmarker.utils.ColorFormat;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 

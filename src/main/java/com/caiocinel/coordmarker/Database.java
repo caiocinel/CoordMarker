@@ -1,8 +1,8 @@
-package me.okay.coordsaver;
+package com.caiocinel.coordmarker;
 
-import me.okay.coordsaver.objects.CoordsObj;
-import me.okay.coordsaver.objects.Enums;
-import me.okay.coordsaver.objects.PreferencesObj;
+import com.caiocinel.coordmarker.objects.CoordsObj;
+import com.caiocinel.coordmarker.objects.Enums;
+import com.caiocinel.coordmarker.objects.PreferencesObj;
 import org.bukkit.Bukkit;
 
 import java.sql.Connection;
@@ -12,19 +12,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 
 public class Database {
 
-    private final String CONNECT_URL;
     private final Logger logger;
     private Connection conn;
 
-    public Database(CoordSaver plugin) {
-        CONNECT_URL = "jdbc:sqlite:" + plugin.getDataFolder() + "/storage.db";
+    public Database(CoordMarker plugin) {
+        String CONNECT_URL = "jdbc:sqlite:" + plugin.getDataFolder() + "/storage.db";
 
         logger = plugin.getLogger();
 
@@ -178,23 +176,6 @@ public class Database {
         return false;
     }
 
-    public boolean forceDeleteCoord(String playerName, String name) {
-        try {
-            PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE playerName = ? AND name = ?;");
-            statement.setString(1, playerName);
-            statement.setString(2, name);
-
-            int deleted = statement.executeUpdate();
-
-            return deleted != 0;
-        }
-        catch (SQLException e) {
-            logger.severe(e.getMessage());
-        }
-
-        return false;
-    }
-
     public void clearCoords(UUID uuid) {
         try {
             PreparedStatement statement = conn.prepareStatement("DELETE FROM Coords WHERE uuid = ?;");
@@ -230,7 +211,7 @@ public class Database {
             String sql = "SELECT * FROM Coords WHERE ";
 
 
-            if(Bukkit.getPlayer(uuid) != null && !Bukkit.getPlayer(uuid).hasPermission("coordsaver.viewglobal"))
+            if(Bukkit.getPlayer(uuid) != null && !Bukkit.getPlayer(uuid).hasPermission("coordmarker.viewglobal"))
                 prefs.defaultFilter = Enums.DEFAULT_FILTER.MY;
 
             if(prefs.defaultFilter.equals(Enums.DEFAULT_FILTER.ANY))
@@ -266,28 +247,8 @@ public class Database {
                     statement.setString(sql.contains("uuid = ?") ? 2 : 1, Bukkit.getWorlds().get(filterDimension).getName());
             }
 
-            statement.setInt((int)sql.chars().filter(num -> num == '?').count()-1, (page - 1) * CoordSaver.COORDS_PER_PAGE);
-            statement.setInt((int)sql.chars().filter(num -> num == '?').count(), CoordSaver.COORDS_PER_PAGE);
-            ResultSet result = statement.executeQuery();
-
-            List<CoordsObj> coordinates = new ArrayList<>();
-            while (result.next()) {
-                coordinates.add(new CoordsObj(result.getString("name"), UUID.fromString(result.getString("uuid")), result.getInt("x"), result.getInt("y"), result.getInt("z"), result.getInt("global"), result.getString("world"),  result.getString("item"), result.getString("playerName")));
-            }
-
-            return coordinates;
-        }
-        catch (SQLException e) {
-            logger.severe(e.getMessage());
-        }
-        return null;
-    }
-    public List<CoordsObj> getMyCoordsList(UUID uuid, int page) {
-        try {
-            PreparedStatement statement = conn.prepareStatement("SELECT * FROM Coords WHERE uuid = ? ORDER BY name LIMIT ?, ?;");
-            statement.setString(1, uuid.toString());
-            statement.setInt(2, (page - 1) * CoordSaver.COORDS_PER_PAGE);
-            statement.setInt(3, CoordSaver.COORDS_PER_PAGE);
+            statement.setInt((int)sql.chars().filter(num -> num == '?').count()-1, (page - 1) * CoordMarker.COORDS_PER_PAGE);
+            statement.setInt((int)sql.chars().filter(num -> num == '?').count(), CoordMarker.COORDS_PER_PAGE);
             ResultSet result = statement.executeQuery();
 
             List<CoordsObj> coordinates = new ArrayList<>();

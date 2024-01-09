@@ -1,6 +1,6 @@
-package me.okay.coordsaver.objects;
+package com.caiocinel.coordmarker.objects;
 
-import me.okay.coordsaver.CoordSaver;
+import com.caiocinel.coordmarker.CoordMarker;
 
 import java.util.UUID;
 
@@ -34,7 +34,7 @@ public class PreferencesObj {
     }
 
     public static PreferencesObj get(UUID playerUUID){
-        return CoordSaver.getInstance().getDatabase().getPreferences(playerUUID);
+        return CoordMarker.getInstance().getDatabase().getPreferences(playerUUID);
     }
 
 }
