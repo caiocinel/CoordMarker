@@ -5,7 +5,7 @@
 
   <groupId>com.caiocinel</groupId>
   <artifactId>coordmarker</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 
   <name>CoordMarker</name>
 
@@ -59,7 +59,7 @@
     <dependency>
         <groupId>com.github.kangarko</groupId>
         <artifactId>Foundation</artifactId>
-        <version>6.6.1</version>
+        <version>6.8.3</version>
     </dependency>
     <dependency>
         <groupId>net.wesjd</groupId>

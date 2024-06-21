@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/coordsaver.iml" filepath="$PROJECT_DIR$/coordsaver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/coordmarker.iml" filepath="$PROJECT_DIR$/coordmarker.iml" />
     </modules>
   </component>
 </project>
